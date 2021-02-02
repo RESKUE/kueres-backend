@@ -40,7 +40,7 @@ public class EventConsumer implements MessageListener {
 
 	private void defaultOnMessageExecutor(Message message, Map<String, String> subscribers) {
 		subscribers.entrySet().forEach((Entry<String, String> entry) -> {
-			rabbitTemplate.convertAndSend(RabbitMQConfiguration.topicExchange, entry.getValue(), message);
+			rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, entry.getValue(), message);
 		});
 	}
 

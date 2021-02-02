@@ -13,34 +13,29 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfiguration {
 
-	public static String topicExchange;
-	@Value("${kueres.topic-exchange}")
-	public void setTopicExchange(String topicExchange) { RabbitMQConfiguration.topicExchange = topicExchange; }
-	
-	public static String queue;
-	@Value("${kueres.default-queue}")
-	public void setDefaultQueue(String defaultQueue) { RabbitMQConfiguration.queue = defaultQueue; }
+	public static final String TOPIC_EXCHANGE = "kueres-events";
+	public static final String DEFAULT_QUEUE = "event-consumer";
 	
 	@Bean
 	public Queue queue() {
-		return new Queue(RabbitMQConfiguration.queue, false);
+		return new Queue(RabbitMQConfiguration.DEFAULT_QUEUE, false);
 	}
 
 	@Bean
 	public TopicExchange exchange() {
-		return new TopicExchange(RabbitMQConfiguration.topicExchange);
+		return new TopicExchange(RabbitMQConfiguration.TOPIC_EXCHANGE);
 	}
 
 	@Bean
 	public Binding binding(Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(RabbitMQConfiguration.queue);
+		return BindingBuilder.bind(queue).to(exchange).with(RabbitMQConfiguration.DEFAULT_QUEUE);
 	}
 
 	@Bean
 	public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, EventConsumer consumer) {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
-		container.setQueueNames(RabbitMQConfiguration.queue);
+		container.setQueueNames(RabbitMQConfiguration.DEFAULT_QUEUE);
 		container.setMessageListener(consumer);
 		return container;
 	}

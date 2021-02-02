@@ -3,9 +3,11 @@ package kueres.event;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
 import kueres.base.BaseEntity;
 
+@Entity
 public class EventEntity extends BaseEntity<EventEntity> {
 	
 	@Column(name = "message", nullable = false)
@@ -26,11 +28,11 @@ public class EventEntity extends BaseEntity<EventEntity> {
 	public String getSender() { return this.sender; }
 	public void setSender(String sender) { this.sender = sender; }
 	
-	@Column(name = "entity", nullable = false)
-	private Object entity;
-	public static final String ENTITY = "entity";
-	public Object getEntity() { return this.entity; }
-	public void setEntity(Object entity) { this.entity = entity; }
+	@Column(name = "entityType", nullable = false)
+	private Class<? extends BaseEntity<?>> entityType;
+	public static final String ENTITY_TYPE = "entityType";
+	public Class<? extends BaseEntity<?>> getEntityType() { return this.entityType; }
+	public void setEntityType(Class<? extends BaseEntity<?>> entityType) { this.entityType = entityType; }
 	
 	@Column(name = "sendAt", nullable = false)
 	private Date sendAt;
@@ -43,7 +45,7 @@ public class EventEntity extends BaseEntity<EventEntity> {
 		String message = details.getMessage();
 		int type = details.getType();
 		String sender = details.getSender();
-		Object entity = details.getEntity();
+		Class<? extends BaseEntity<?>> entityType = details.getEntityType();
 		Date sendAt = details.getSendAt();
 		if (message != null) {
 			this.setMessage(message);
@@ -52,8 +54,8 @@ public class EventEntity extends BaseEntity<EventEntity> {
 		if (sender != null) {
 			this.setSender(sender);
 		}
-		if (entity != null) {
-			this.setEntity(entity);
+		if (entityType != null) {
+			this.setEntityType(entityType);
 		}
 		if (sendAt != null) {
 			this.setSendAt(sendAt);

@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,18 +19,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import kueres.base.BaseController;
 import kueres.base.BaseEntity;
+import kueres.location.DefaultLocationService;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
 
+@RestController
+@RequestMapping(BaseController.API_ENDPOINT + EventController.ROUTE)
 public class EventController {
 
 	public static final String ROUTE = "/event";
 	
 	protected EventService service;
+	
+	@Autowired
+	DefaultLocationService locationService;
 	
 	@PostMapping()
 	@RolesAllowed("administrator")
@@ -51,6 +61,8 @@ public class EventController {
 			@RequestParam Optional<Integer> page,
 			@RequestParam Optional<Integer> size
 			) {
+		
+		locationService.addressToCoordinates("Ricarda-Huch-Straße 76, 61350 Bad Homburg");
 		
 		EntitySpecification<EventEntity> specification = null;
 		if (filter.isPresent()) {

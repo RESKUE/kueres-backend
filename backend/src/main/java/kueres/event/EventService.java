@@ -5,19 +5,16 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Service;
 
+import kueres.base.BaseEntity;
 import kueres.base.BaseService;
 
+@Service
 public class EventService extends BaseService<EventEntity, EventRepository> {
-
-	@Autowired
-	private MessageConverter messageConverter;
 	
 	@Override
 	@PostConstruct
@@ -27,20 +24,20 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 		this.startReceivingEvents();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RabbitListener(queues = EventController.ROUTE)
 	public void receiveMessage(
-			Message messageObject,
-			@Payload String message,
-			@Header("senderIdentifier") String senderIdentifier
+			@Payload BaseEntity<?> entity,
+			@Header("senderIdentifier") String senderIdentifier,
+			@Header("message") String message,
+			@Header("type") int type
 			) throws UnsupportedEncodingException {
-		
-		Object entity = messageConverter.fromMessage(messageObject);
 		
 		EventEntity event = new EventEntity();
 		event.setMessage(message);
-		event.setType(0);
+		event.setType(type);
 		event.setSender(senderIdentifier);
-		event.setEntity(entity);
+		event.setEntityType((Class<? extends BaseEntity<?>>) entity.getClass());
 		event.setSendAt(new Date());
 		this.create(event);
 		
@@ -54,8 +51,7 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 		this.sendEvent(
 				populated.getMessage(), 
 				populated.getType(), 
-				populated.getSender(), 
-				new String[0], 
+				populated.getSender(),
 				event);
 		
 		return populated;

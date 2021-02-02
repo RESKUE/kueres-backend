@@ -16,35 +16,20 @@ import kueres.query.EntitySpecification;
 public abstract class BaseService<E extends BaseEntity<E>, R extends BaseRepository<E>> extends EventSubscriber {
 
 	@Autowired
-	protected R repository;
+	protected RabbitTemplate rabbitTemplate;
 	
 	@Autowired
-	private RabbitTemplate rabbitTemplate;
+	protected R repository;
 	
-	protected void sendEvent(Object object) {
+	protected void sendEvent(String message, int type, String sender, E entity) {
 		rabbitTemplate.convertAndSend(
-				RabbitMQConfiguration.topicExchange,
-				RabbitMQConfiguration.queue, 
-				object,
-				m -> {
-				    m.getMessageProperties().getHeaders().put("senderIdentifier", this.identifier);
-				    m.getMessageProperties().getHeaders().put("message", "");
-				    m.getMessageProperties().getHeaders().put("type", 0);
-				    m.getMessageProperties().getHeaders().put("receivers", new String[0]);
-				    return m;
-				});
-	}
-	
-	protected void sendEvent(String message, int type, String sender, String[] receivers, E entity) {
-		rabbitTemplate.convertAndSend(
-				RabbitMQConfiguration.topicExchange,
-				RabbitMQConfiguration.queue,
+				RabbitMQConfiguration.TOPIC_EXCHANGE,
+				RabbitMQConfiguration.DEFAULT_QUEUE,
 				entity,
 				m -> {
 				    m.getMessageProperties().getHeaders().put("senderIdentifier", sender);
 				    m.getMessageProperties().getHeaders().put("message", message);
 				    m.getMessageProperties().getHeaders().put("type", type);
-				    m.getMessageProperties().getHeaders().put("receivers", receivers);
 				    return m;
 				});
 	}
