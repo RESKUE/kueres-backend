@@ -23,12 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import kueres.base.BaseController;
 import kueres.base.BaseEntity;
 import kueres.location.DefaultLocationService;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
+import kueres.utility.Utility;
 
 @RestController
 @RequestMapping(BaseController.API_ENDPOINT + EventController.ROUTE)
@@ -36,15 +39,15 @@ public class EventController {
 
 	public static final String ROUTE = "/event";
 	
+	@Autowired
 	protected EventService service;
 	
 	@Autowired
 	DefaultLocationService locationService;
 	
 	@PostMapping()
-	@RolesAllowed("administrator")
-	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) {
-		
+	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) throws JsonProcessingException {
+		Utility.LOG.info("event entity @controller: {}", event.getEntityJSON());
 		service.sendEvent(event);
 		
 		Map<String, Boolean> response = new HashMap<String, Boolean>();
@@ -61,8 +64,6 @@ public class EventController {
 			@RequestParam Optional<Integer> page,
 			@RequestParam Optional<Integer> size
 			) {
-		
-		locationService.addressToCoordinates("Ricarda-Huch-Straße 76, 61350 Bad Homburg");
 		
 		EntitySpecification<EventEntity> specification = null;
 		if (filter.isPresent()) {

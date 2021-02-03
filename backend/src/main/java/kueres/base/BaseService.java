@@ -2,6 +2,7 @@ package kueres.base;
 
 import java.util.List;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -9,29 +10,48 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
+import kueres.event.EventEntity;
 import kueres.eventbus.EventSubscriber;
 import kueres.eventbus.RabbitMQConfiguration;
 import kueres.query.EntitySpecification;
+import kueres.utility.Utility;
+
+import java.lang.reflect.ParameterizedType;
 
 public abstract class BaseService<E extends BaseEntity<E>, R extends BaseRepository<E>> extends EventSubscriber {
 
 	@Autowired
 	protected RabbitTemplate rabbitTemplate;
 	
+	protected ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
+	
 	@Autowired
 	protected R repository;
 	
-	protected void sendEvent(String message, int type, String sender, E entity) {
+	@SuppressWarnings("unchecked")
+	public E getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
+		return new ObjectMapper().readValue(
+				json, 
+				(Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+	};
+	
+	protected void sendEvent(String message, int type, String sender, String entityJSON) throws AmqpException, JsonProcessingException {
+		Utility.LOG.info("event entity @baseService: message: {}, type: {}, sender: {}, entityJSON: {}", message, type, sender, entityJSON);
+		EventEntity event = new EventEntity();
+		event.setMessage(message);
+		event.setType(type);
+		event.setSender(sender);
+		event.setEntityJSON(entityJSON);
+		
 		rabbitTemplate.convertAndSend(
 				RabbitMQConfiguration.TOPIC_EXCHANGE,
 				RabbitMQConfiguration.DEFAULT_QUEUE,
-				entity,
-				m -> {
-				    m.getMessageProperties().getHeaders().put("senderIdentifier", sender);
-				    m.getMessageProperties().getHeaders().put("message", message);
-				    m.getMessageProperties().getHeaders().put("type", type);
-				    return m;
-				});
+				this.objectWriter.writeValueAsString(event));
 	}
 	
 	public List<E> findAll(EntitySpecification<E> specification, Sort sort, Pageable pageable) {

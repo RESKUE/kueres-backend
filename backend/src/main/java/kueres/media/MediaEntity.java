@@ -16,19 +16,19 @@ public class MediaEntity {
 	public long getId() { return this.id; }
 	
 	@Column(name = "location", nullable = false)
-	private String location;
+	private String location = "";
 	public static final String LOCATION = "location";
 	public String getLocation() { return this.location; }
 	public void setLocation(String location) { this.location = location; }
 	
 	@Column(name = "mimeType", nullable = false)
-	private String mimeType;
+	private String mimeType = "";
 	public static final String MIME_TYPE = "mimeType";
 	public String getMimeType() { return this.mimeType; }
 	public void setMimeType(String mimeType) { this.mimeType = mimeType; }
 	
 	@Column(name = "altText", nullable = false)
-	private String altText;
+	private String altText = "";
 	public static final String ALT_TEXT = "altText";
 	public String getAltText() { return this.altText; }
 	public void setAltText(String altText) { this.altText = altText; }

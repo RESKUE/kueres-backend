@@ -11,7 +11,7 @@ import kueres.base.BaseEntity;
 public class EventEntity extends BaseEntity<EventEntity> {
 	
 	@Column(name = "message", nullable = false)
-	private String message;
+	private String message = "";
 	public static final String MESSAGE = "message";
 	public String getMessage() { return this.message; }
 	public void setMessage(String message) { this.message = message; }
@@ -23,19 +23,19 @@ public class EventEntity extends BaseEntity<EventEntity> {
 	public void setType(int type) { this.type = type; }
 	
 	@Column(name = "sender", nullable = false)
-	private String sender;
+	private String sender = "";
 	public static final String SENDER = "sender";
 	public String getSender() { return this.sender; }
 	public void setSender(String sender) { this.sender = sender; }
 	
-	@Column(name = "entityType", nullable = false)
-	private Class<? extends BaseEntity<?>> entityType;
-	public static final String ENTITY_TYPE = "entityType";
-	public Class<? extends BaseEntity<?>> getEntityType() { return this.entityType; }
-	public void setEntityType(Class<? extends BaseEntity<?>> entityType) { this.entityType = entityType; }
+	@Column(name = "entityJSON", nullable = false)
+	private String entityJSON = "";
+	public static final String ENTITY_JSON = "entityJSON";
+	public String getEntityJSON() { return this.entityJSON; }
+	public void setEntityJSON(String entityJSON) { this.entityJSON = entityJSON; }
 	
 	@Column(name = "sendAt", nullable = false)
-	private Date sendAt;
+	private Date sendAt = new Date();
 	public static final String SEND_AT = "sendAt";
 	public Date getSendAt() { return this.sendAt; }
 	public void setSendAt(Date sendAt) { this.sendAt = sendAt; }
@@ -45,7 +45,7 @@ public class EventEntity extends BaseEntity<EventEntity> {
 		String message = details.getMessage();
 		int type = details.getType();
 		String sender = details.getSender();
-		Class<? extends BaseEntity<?>> entityType = details.getEntityType();
+		String entityJSON = details.getEntityJSON();
 		Date sendAt = details.getSendAt();
 		if (message != null) {
 			this.setMessage(message);
@@ -54,8 +54,8 @@ public class EventEntity extends BaseEntity<EventEntity> {
 		if (sender != null) {
 			this.setSender(sender);
 		}
-		if (entityType != null) {
-			this.setEntityType(entityType);
+		if (entityJSON != null) {
+			this.setEntityJSON(entityJSON);
 		}
 		if (sendAt != null) {
 			this.setSendAt(sendAt);

@@ -1,20 +1,26 @@
 package kueres.event;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-
 import javax.annotation.PostConstruct;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import kueres.base.BaseEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import kueres.base.BaseService;
+import kueres.media.MediaEntity;
+import kueres.media.MediaService;
+import kueres.utility.Utility;
 
 @Service
 public class EventService extends BaseService<EventEntity, EventRepository> {
+	
+	@Autowired
+	MediaService mediaService;
 	
 	@Override
 	@PostConstruct
@@ -24,37 +30,26 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 		this.startReceivingEvents();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@RabbitListener(queues = EventController.ROUTE)
-	public void receiveMessage(
-			@Payload BaseEntity<?> entity,
-			@Header("senderIdentifier") String senderIdentifier,
-			@Header("message") String message,
-			@Header("type") int type
-			) throws UnsupportedEncodingException {
-		
-		EventEntity event = new EventEntity();
-		event.setMessage(message);
-		event.setType(type);
-		event.setSender(senderIdentifier);
-		event.setEntityType((Class<? extends BaseEntity<?>>) entity.getClass());
-		event.setSendAt(new Date());
+	public void receiveMessage(@Payload String eventJSON) throws JsonMappingException, JsonProcessingException {
+		Utility.LOG.info("received event: {}", eventJSON);
+		EventEntity event = getEntityFromJSON(eventJSON);
+		Utility.LOG.info("converted to event entity: {}", event);
 		this.create(event);
-		
 	}
 	
-	public EventEntity sendEvent(EventEntity event) {
+	public void sendEvent(EventEntity event) throws AmqpException, JsonProcessingException {	
+		Utility.LOG.info("event entity @service: {}", event);
 		
-		EventEntity populated = new EventEntity();
-		populated.applyPatch(event);
+		String entityJSON = event.getEntityJSON();
+		MediaEntity media = mediaService.getEntityFromJSON(entityJSON);
+		Utility.LOG.info("media: id: {}, location: {}, mimeType: {}, altText: {}", media.getId(), media.getLocation(), media.getMimeType(), media.getAltText());
 		
 		this.sendEvent(
-				populated.getMessage(), 
-				populated.getType(), 
-				populated.getSender(),
-				event);
-		
-		return populated;
+				event.getMessage(), 
+				event.getType(), 
+				event.getSender(),
+				event.getEntityJSON());
 		
 	}
 

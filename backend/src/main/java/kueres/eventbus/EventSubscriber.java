@@ -27,7 +27,7 @@ public abstract class EventSubscriber {
 		this.binding = new Binding(
 				this.identifier, 
 				Binding.DestinationType.QUEUE, 
-				"reskue-events",
+				RabbitMQConfiguration.TOPIC_EXCHANGE,
 				this.routingKey, 
 				null);
 		amqpAdmin.declareQueue(queue);

@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kueres.utility.Utility;
 
 @Service
@@ -46,5 +50,11 @@ public class MediaService {
 	public void setFileSystemRepository(FileSystemRepository fileSystemRepository) {
 		this.fileSystemRepository = fileSystemRepository;
 	}
+	
+	public MediaEntity getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
+		return new ObjectMapper().readValue(
+				json, 
+				MediaEntity.class);
+	};
 
 }
