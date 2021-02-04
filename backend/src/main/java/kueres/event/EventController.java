@@ -27,7 +27,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import kueres.base.BaseController;
 import kueres.base.BaseEntity;
-import kueres.location.DefaultLocationService;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
@@ -41,9 +40,6 @@ public class EventController {
 	
 	@Autowired
 	protected EventService service;
-	
-	@Autowired
-	DefaultLocationService locationService;
 	
 	@PostMapping()
 	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) throws JsonProcessingException {

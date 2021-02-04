@@ -8,6 +8,13 @@
 			<id>gitlab-maven</id>
 			<url>https://gitlab-ext.iosb.fraunhofer.de/api/v4/packages/maven</url>
 		</repository>
+		<repository>
+			<id>bintray-fraunhoferiosb-Maven</id>
+			<url>https://dl.bintray.com/fraunhoferiosb/Maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
@@ -77,6 +84,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>de.fraunhofer.iosb.ilt</groupId>
+			<artifactId>FROST-Client</artifactId>
+			<version>0.33</version>
 		</dependency>
 
 		<dependency>
