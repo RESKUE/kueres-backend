@@ -17,7 +17,7 @@ test-maven:
   tags:
     - ILT
   script:
-    - "mvn $MAVEN_CLI_OPTS verify -f /backend/pom.xml"
+    - "mvn $MAVEN_CLI_OPTS verify -f ./backend/pom.xml"
 
 deploy-maven:
   stage: deploy
@@ -26,4 +26,4 @@ deploy-maven:
   only:
     - master
   script:
-    - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -f /backend/pom.xml'
+    - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -f ./backend/pom.xml'
