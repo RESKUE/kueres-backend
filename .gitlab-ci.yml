@@ -4,10 +4,6 @@ stages:
   - test
   - deploy
 
-cache:
-  paths:
-    - .m2/repository
-
 test-maven:
   stage: test
   tags:
