@@ -39,7 +39,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>KUERES backend</name>
 	<description>KUERES backend framework</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<properties>
 		<java.version>11</java.version>
