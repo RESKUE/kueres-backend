@@ -12,9 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import kueres.base.BaseService;
-import kueres.media.MediaEntity;
 import kueres.media.MediaService;
-import kueres.utility.Utility;
 
 @Service
 public class EventService extends BaseService<EventEntity, EventRepository> {
@@ -32,18 +30,12 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 	
 	@RabbitListener(queues = EventController.ROUTE)
 	public void receiveMessage(@Payload String eventJSON) throws JsonMappingException, JsonProcessingException {
-		Utility.LOG.info("received event: {}", eventJSON);
+		
 		EventEntity event = getEntityFromJSON(eventJSON);
-		Utility.LOG.info("converted to event entity: {}", event);
 		this.create(event);
 	}
 	
 	public void sendEvent(EventEntity event) throws AmqpException, JsonProcessingException {	
-		Utility.LOG.info("event entity @service: {}", event);
-		
-		String entityJSON = event.getEntityJSON();
-		MediaEntity media = mediaService.getEntityFromJSON(entityJSON);
-		Utility.LOG.info("media: id: {}, location: {}, mimeType: {}, altText: {}", media.getId(), media.getLocation(), media.getMimeType(), media.getAltText());
 		
 		this.sendEvent(
 				event.getMessage(), 

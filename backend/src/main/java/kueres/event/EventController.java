@@ -30,7 +30,6 @@ import kueres.base.BaseEntity;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
-import kueres.utility.Utility;
 
 @RestController
 @RequestMapping(BaseController.API_ENDPOINT + EventController.ROUTE)
@@ -43,7 +42,7 @@ public class EventController {
 	
 	@PostMapping()
 	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) throws JsonProcessingException {
-		Utility.LOG.info("event entity @controller: {}", event.getEntityJSON());
+		
 		service.sendEvent(event);
 		
 		Map<String, Boolean> response = new HashMap<String, Boolean>();

@@ -1,5 +1,6 @@
 package kueres.base;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.springframework.amqp.AmqpException;
@@ -19,9 +20,6 @@ import kueres.event.EventEntity;
 import kueres.eventbus.EventSubscriber;
 import kueres.eventbus.RabbitMQConfiguration;
 import kueres.query.EntitySpecification;
-import kueres.utility.Utility;
-
-import java.lang.reflect.ParameterizedType;
 
 public abstract class BaseService<E extends BaseEntity<E>, R extends BaseRepository<E>> extends EventSubscriber {
 
@@ -41,7 +39,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	};
 	
 	protected void sendEvent(String message, int type, String sender, String entityJSON) throws AmqpException, JsonProcessingException {
-		Utility.LOG.info("event entity @baseService: message: {}, type: {}, sender: {}, entityJSON: {}", message, type, sender, entityJSON);
+		
 		EventEntity event = new EventEntity();
 		event.setMessage(message);
 		event.setType(type);
