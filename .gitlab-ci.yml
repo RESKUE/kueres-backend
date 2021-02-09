@@ -1,15 +1,22 @@
 image: maven:3.6.3-jdk-11
 
+variables:
+  GROUP_ID: kueres
+  ARTIFACT_ID: backend
+  VERSION: 0.0.1-SNAPSHOT
+
 stages:
-  - test
+  - build
   - deploy
 
-test-maven:
-  stage: test
+maven-build:
+  stage: build
   tags:
     - ILT
-  script:
-    - "mvn verify"
+  script: "mvn verify -B -s ci_settings.xml"
+  artifacts:
+    paths:
+      - target/*.jar
 
 deploy-maven:
   stage: deploy
@@ -17,5 +24,13 @@ deploy-maven:
     - ILT
   only:
     - master
-  script:
-    - 'mvn deploy -s ci_settings.xml'
+  script: 
+    - |
+      mvn deploy:deploy-file -s ci_settings.xml
+      -DgroupId=$GROUP_ID
+      -DartifactId=$ARTIFACT_ID
+      -Dversion=$VERSION
+      -Dpackaging=jar
+      -Dfile=/target/${ARTIFACT_ID}-${VERSION}.jar
+      -DrepositoryId=gitlab-maven
+      -Durl=https://gitlab-ext.iosb.fraunhofer.de/api/v4/projects/2562/packages/maven
