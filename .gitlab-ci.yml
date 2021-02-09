@@ -16,7 +16,7 @@ maven-build:
   script: "mvn verify -B -s ci_settings.xml"
   artifacts:
     paths:
-      - target/*.jar
+      - ./target/$ARTIFACT_ID-$VERSION.jar
 
 deploy-maven:
   stage: deploy
@@ -31,6 +31,6 @@ deploy-maven:
       -DartifactId=$ARTIFACT_ID
       -Dversion=$VERSION
       -Dpackaging=jar
-      -Dfile=/target/${ARTIFACT_ID}-${VERSION}.jar
+      -Dfile=./target/$ARTIFACT_ID-$VERSION.jar
       -DrepositoryId=gitlab-maven
       -Durl=https://gitlab-ext.iosb.fraunhofer.de/api/v4/projects/2562/packages/maven
