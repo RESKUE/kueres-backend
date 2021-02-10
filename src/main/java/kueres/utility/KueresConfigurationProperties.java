@@ -2,6 +2,11 @@ package kueres.utility;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/*
+ * ToDo: add config properties for location service
+ * ToDo: remove rabbit config properties
+ */
+
 @ConfigurationProperties(prefix = "kueres")
 public class KueresConfigurationProperties {
 

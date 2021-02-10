@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import ch.qos.logback.classic.Logger;
 import kueres.eventbus.EventSubscriber;
 
+/*
+ * ToDo: update receive message to json string
+ */
+
 @Service
 public class Utility extends EventSubscriber {
 

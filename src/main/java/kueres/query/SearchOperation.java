@@ -3,6 +3,10 @@ package kueres.query;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/*
+ * ToDo: test search operations
+ */
+
 public enum SearchOperation {
 
 	GREATER_THAN,

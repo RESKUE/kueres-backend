@@ -12,6 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 import kueres.base.BaseEntity;
 
+/*
+ * ToDo: test search operations
+ */
+
 @SuppressWarnings("serial")
 public class EntitySpecification<E extends BaseEntity<E>> implements Specification<E> {
 

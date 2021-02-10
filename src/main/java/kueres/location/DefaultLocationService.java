@@ -23,6 +23,10 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import kueres.utility.Utility;
 
+/*
+ * ToDo: make urls config properties
+ */
+
 @Service
 public class DefaultLocationService implements LocationService {
 
