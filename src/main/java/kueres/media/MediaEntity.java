@@ -2,19 +2,20 @@ package kueres.media;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import kueres.base.BaseEntity;
+import kueres.utility.Utility;
+
+/*
+ * ToDo: is the location property hidden?
+ */
 
 @Entity
-public class MediaEntity {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	public static final String ID = "id";
-	public long getId() { return this.id; }
+public class MediaEntity extends BaseEntity<MediaEntity> {
 	
+	@JsonIgnore
 	@Column(name = "location", nullable = false)
 	private String location = "";
 	public static final String LOCATION = "location";
@@ -32,5 +33,11 @@ public class MediaEntity {
 	public static final String ALT_TEXT = "altText";
 	public String getAltText() { return this.altText; }
 	public void setAltText(String altText) { this.altText = altText; }
+	
+	@Override
+	public void applyPatch(MediaEntity details) {
+		Utility.LOG.error("MediaEntities can not be updated");
+		throw new UnsupportedOperationException("MediaEntities can not be updated!");
+	}
 	
 }

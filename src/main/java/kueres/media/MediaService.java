@@ -2,6 +2,8 @@ package kueres.media;
 
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -13,10 +15,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kueres.eventbus.EventSubscriber;
 import kueres.utility.Utility;
 
 @Service
-public class MediaService {
+public class MediaService extends EventSubscriber {
 	
 	@Autowired
 	private MediaRepository mediaRepository;
@@ -24,9 +27,21 @@ public class MediaService {
 	@Autowired
 	private FileSystemRepository fileSystemRepository;
 	
+	@PostConstruct
+	@Override
+	public void init() {
+		
+		this.identifier = MediaController.ROUTE;
+		this.routingKey = MediaController.ROUTE;
+		
+	}
+	
 	public MediaEntity save(MultipartFile multipartFile) {
+		
 		MediaEntity media = new MediaEntity();
 		media.setLocation("UPLOADING");
+		media.setMimeType(multipartFile.getContentType());
+		media.setAltText(multipartFile.getOriginalFilename());
 		media = mediaRepository.save(media);
 		
 		try {
@@ -36,25 +51,50 @@ public class MediaService {
 			return mediaRepository.save(media);
 			
 		} catch (IOException e) {
-			Utility.LOG.error(e.getMessage());
+			
+			Utility.LOG.error("Could not save media: {}", e.getStackTrace().toString());
 			mediaRepository.delete(media);
-			return null;
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		}
+		
 	}
 	
 	public FileSystemResource getFileById(long id) {
+		
 		MediaEntity media = mediaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		return fileSystemRepository.findByLocation(media.getLocation());
+		
+	}
+	
+	public MediaEntity findById(long id) {
+		
+		return mediaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		
+	}
+	
+	public boolean delete(long id) {
+		
+		MediaEntity media = mediaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		boolean fileDeleted = fileSystemRepository.delete(media.getLocation());
+		if (fileDeleted) {
+			mediaRepository.delete(media);
+			return true;
+		}
+		return false;
+		
 	}
 	
 	public void setFileSystemRepository(FileSystemRepository fileSystemRepository) {
+		
 		this.fileSystemRepository = fileSystemRepository;
+		
 	}
 	
 	public MediaEntity getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
-		return new ObjectMapper().readValue(
-				json, 
-				MediaEntity.class);
-	};
+		
+		return new ObjectMapper().readValue(json, MediaEntity.class);
+		
+	}
 
 }

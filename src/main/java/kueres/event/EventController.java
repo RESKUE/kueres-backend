@@ -1,7 +1,6 @@
 package kueres.event;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,6 +30,10 @@ import kueres.base.BaseEntity;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
+
+/*
+ * ToDo: add auth
+ */
 
 @RestController
 @RequestMapping(BaseController.API_ENDPOINT + EventController.ROUTE)
@@ -53,7 +57,7 @@ public class EventController {
 	
 	@GetMapping()
 	@RolesAllowed({"administrator", "helper"})
-	public List<EventEntity> findAll(
+	public Page<EventEntity> findAll(
 			@RequestParam Optional<String> filter,
 			@RequestParam Optional<String[]> sort,
 			@RequestParam Optional<Integer> page,
@@ -74,12 +78,14 @@ public class EventController {
 			sorting = SortBuilder.buildSort(sort.get());
 		}
 		
-		Pageable pagination = Pageable.unpaged();
+		Pageable pageable = Pageable.unpaged();
 		if (page.isPresent() && size.isPresent()) {
-			pagination = PageRequest.of(page.get(), size.get());
+			pageable = PageRequest.of(page.get(), size.get());
 		}
 		
-		return service.findAll(specification, sorting, pagination);
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+		
+		return service.findAll(specification, pageable);
 		
 	}
 	

@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import kueres.base.BaseService;
-import kueres.media.MediaService;
 
 @Service
 public class EventService extends BaseService<EventEntity, EventRepository> {
-	
-	@Autowired
-	MediaService mediaService;
 	
 	@Override
 	@PostConstruct

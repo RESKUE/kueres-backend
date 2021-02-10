@@ -1,7 +1,6 @@
 package kueres.base;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,10 +8,10 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +34,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@GetMapping()
 	@RolesAllowed({"administrator", "helper"})
-	public List<E> findAll(
+	public Page<E> findAll(
 			@RequestParam Optional<String> filter,
 			@RequestParam Optional<String[]> sort,
 			@RequestParam Optional<Integer> page,
@@ -56,20 +55,20 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 			sorting = SortBuilder.buildSort(sort.get());
 		}
 		
-		Pageable pagination = Pageable.unpaged();
+		Pageable pageable = Pageable.unpaged();
 		if (page.isPresent() && size.isPresent()) {
-			pagination = PageRequest.of(page.get(), size.get());
+			pageable = PageRequest.of(page.get(), size.get());
 		}
 		
-		return service.findAll(specification, sorting, pagination);
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+		
+		return service.findAll(specification, pageable);
 		
 	}
 	
 	@GetMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed({"administrator", "helper"})
-	public ResponseEntity<E> findById(
-			@PathVariable(value = BaseEntity.ID) long id
-			) throws ResourceNotFoundException {
+	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		E entity = service.findById(id);
 		return ResponseEntity.ok().body(entity);
@@ -86,10 +85,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public ResponseEntity<E> update(
-			@PathVariable(value = BaseEntity.ID) long id,
-			@Valid @RequestBody E details
-			) throws ResourceNotFoundException {
+	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) Long id, @Valid @RequestBody E details) {
 		
 		E updatedEntity = service.update(id, details);
 		return ResponseEntity.ok().body(updatedEntity);
@@ -98,9 +94,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public Map<String, Boolean> delete(
-			@PathVariable(value = BaseEntity.ID) long id
-			) throws Exception {
+	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		service.delete(id);
 		

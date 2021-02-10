@@ -1,15 +1,15 @@
 package kueres.base;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -52,24 +52,15 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 				this.objectWriter.writeValueAsString(event));
 	}
 	
-	public List<E> findAll(EntitySpecification<E> specification, Sort sort, Pageable pageable) {
+	public Page<E> findAll(EntitySpecification<E> specification, Pageable pageable) {
 		
-		if (sort != Sort.unsorted() && pageable != Pageable.unpaged()) {
-			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-		}
-		
-		if (pageable != Pageable.unpaged()) {
-			return repository.findAll(specification, pageable).getContent();			
-		} else if (sort != Sort.unsorted()) {
-			return repository.findAll(specification, sort);
-		}
-		return repository.findAll(specification);
+		return repository.findAll(specification, pageable);
 		
 	}
 	
 	public E findById(long id) throws ResourceNotFoundException {
 		
-		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found: " + id));
+		return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		
 	}
 	
@@ -81,7 +72,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	
 	public E update(long id, E details) throws ResourceNotFoundException {
 		
-		E entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found: " + id));
+		E entity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		entity.applyPatch(details);
 		final E updatedEntity = repository.save(entity);
 		return updatedEntity;
@@ -90,7 +81,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	
 	public E delete(long id) throws ResourceNotFoundException {
 		
-		E entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found: " + id));
+		E entity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		repository.delete(entity);
 		return entity;
 		
