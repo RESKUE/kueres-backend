@@ -62,7 +62,7 @@ public class MediaService extends EventSubscriber {
 	
 	public FileSystemResource getFileById(long id) {
 		
-		MediaEntity media = mediaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		MediaEntity media = findById(id);
 		return fileSystemRepository.findByLocation(media.getLocation());
 		
 	}
@@ -75,7 +75,7 @@ public class MediaService extends EventSubscriber {
 	
 	public boolean delete(long id) {
 		
-		MediaEntity media = mediaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		MediaEntity media = findById(id);
 		boolean fileDeleted = fileSystemRepository.delete(media.getLocation());
 		if (fileDeleted) {
 			mediaRepository.delete(media);

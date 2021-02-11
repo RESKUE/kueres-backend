@@ -7,12 +7,13 @@ import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -30,6 +32,7 @@ import kueres.base.BaseEntity;
 import kueres.query.EntitySpecification;
 import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
+import kueres.utility.Utility;
 
 /*
  * ToDo: add auth
@@ -44,10 +47,16 @@ public class EventController {
 	@Autowired
 	protected EventService service;
 	
-	@PostMapping()
-	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) throws JsonProcessingException {
+	@PostMapping("/sendEvent")
+	@RolesAllowed({"administrator"})
+	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) {
 		
-		service.sendEvent(event);
+		try {
+			service.sendEvent(event);
+		} catch (AmqpException | JsonProcessingException e) {
+			Utility.LOG.error("Could not send event: {}", e.getStackTrace().toString());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 		Map<String, Boolean> response = new HashMap<String, Boolean>();
 		response.put("send", true);
@@ -93,7 +102,7 @@ public class EventController {
 	@RolesAllowed({"administrator", "helper"})
 	public ResponseEntity<EventEntity> findById(
 			@PathVariable(value = BaseEntity.ID) long id
-			) throws ResourceNotFoundException {
+			) {
 		
 		EventEntity entity = service.findById(id);
 		return ResponseEntity.ok().body(entity);
@@ -104,7 +113,7 @@ public class EventController {
 	@RolesAllowed("administrator")
 	public Map<String, Boolean> delete(
 			@PathVariable(value = BaseEntity.ID) long id
-			) throws Exception {
+			) {
 		
 		service.delete(id);
 		

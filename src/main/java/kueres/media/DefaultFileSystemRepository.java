@@ -3,7 +3,6 @@ package kueres.media;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -32,12 +31,14 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 			if (!success) {
 				
 				Utility.LOG.info("media dir did not exist and could not be created: {}", this.MEDIA_DIR);
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 				
 			}
 			
 		} else if (!mediaDir.isDirectory()) {
 			
 			Utility.LOG.info("media dir is not a directory: {}", this.MEDIA_DIR);
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		}
 		
@@ -60,16 +61,17 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 	@Override
 	public FileSystemResource findByLocation(String location) {
 		
-		try {
+		File file = new File(location);
+		if (file.exists()) {
 			
-	        return new FileSystemResource(Paths.get(location));
-	        
-	    } catch (InvalidPathException e) {
-	    	
-	    	Utility.LOG.error("No file found at location: {}, {}", location, e.getStackTrace().toString());
+			return new FileSystemResource(file.toPath());
+			
+		} else {
+			
+			Utility.LOG.error("No file found at location: {}", location);
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	        
-	    }
+		}
 		
 	}
 	

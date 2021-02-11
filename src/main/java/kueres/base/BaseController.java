@@ -68,7 +68,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@GetMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed({"administrator", "helper"})
-	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) Long id) {
+	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) long id) {
 		
 		E entity = service.findById(id);
 		return ResponseEntity.ok().body(entity);
@@ -85,7 +85,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) Long id, @Valid @RequestBody E details) {
+	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) long id, @Valid @RequestBody E details) {
 		
 		E updatedEntity = service.update(id, details);
 		return ResponseEntity.ok().body(updatedEntity);
@@ -94,7 +94,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) Long id) {
+	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
 		
 		service.delete(id);
 		

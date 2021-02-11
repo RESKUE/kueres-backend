@@ -47,7 +47,7 @@ public class MediaController {
 	
 	@GetMapping(value = "/{" + MediaEntity.ID + "}", produces = MediaType.ALL_VALUE)
 	@RolesAllowed({"administrator", "helper"})
-	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) Long id) {
+	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) long id) {
 		
 		MediaEntity media = service.findById(id);
 		FileSystemResource file = service.getFileById(id);
@@ -61,7 +61,7 @@ public class MediaController {
 	
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) Long id) {
+	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
 		
 		boolean deletedFile = service.delete(id);
 		
