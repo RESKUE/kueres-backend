@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
@@ -29,7 +30,7 @@ import kueres.utility.Utility;
 
 @Service
 public class DefaultLocationService implements LocationService {
-
+	
 	private String nominatimUrl = "https://nominatim.openstreetmap.org";
 
 	private String frostUrl = "http://localhost:5438/FROST-Server/v1.0/";
@@ -37,7 +38,6 @@ public class DefaultLocationService implements LocationService {
 	private int polygonSteps = 8;
 	private double radiusEarth = 6371000;
 
-	@Override
 	public double[] addressToCoordinates(String address) {
 
 		String transformedAddress = address.replace(" ", "+");
@@ -99,7 +99,6 @@ public class DefaultLocationService implements LocationService {
 		return null;
 	}
 
-	@Override
 	public String coordinatesToAddress(double[] coordinates) {
 
 		if (coordinates == null || coordinates.length != 2) {
@@ -152,8 +151,8 @@ public class DefaultLocationService implements LocationService {
 		return null;
 	}
 
-	@Override
-	public void addPOI(long id, String name, double[] coordinates) {
+	
+	public Id addPOI(String name, double[] coordinates) {
 
 		try {
 
@@ -161,41 +160,38 @@ public class DefaultLocationService implements LocationService {
 			SensorThingsService sts = new SensorThingsService(frostEndpoint);
 			
 			Location poiLocation = new Location();
-			poiLocation.setName(String.valueOf(id));
+			poiLocation.setName(name);
 			poiLocation.setDescription(name);
 			poiLocation.setEncodingType("application/vnd.geo+json");
 			poiLocation.setLocation(new Point(coordinates[0], coordinates[1]));
 			sts.locations().create(poiLocation);
 			
 			Thing poi = new Thing();
-			poi.setName(String.valueOf(id));
+			poi.setName(name);
 			poi.setDescription(name);
 			poi.getLocations().add(poiLocation);
 			sts.things().create(poi);
+			
+			return poi.getId();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (ServiceFailureException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 
 	}
 
-	@Override
-	public void removePOI(long id) {
+	public void removePOI(Id id) {
 
 		try {
 
 			URL frostEndpoint = new URL(this.frostUrl);
 			SensorThingsService sts = new SensorThingsService(frostEndpoint);
-
-			EntityList<Thing> pois = sts.things().query().filter("startswith(name,'" + id + "')").list();
-			for (Thing poi : pois) {
-				if (poi.getName().equals(String.valueOf(id))) {
-					sts.things().delete(poi);
-					return;
-				}
-			}
+			Thing thing = sts.things().find(id);
+			sts.things().delete(thing);
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -205,8 +201,7 @@ public class DefaultLocationService implements LocationService {
 
 	}
 
-	@Override
-	public List<Long> findInRadius(double radius, double[] center) {
+	public List<Id> findInRadius(double radius, double[] center) {
 		
 		try {
 
@@ -220,16 +215,16 @@ public class DefaultLocationService implements LocationService {
 			String polygon = firstPoint[0] + " " + firstPoint[1];
 			for (double angle = (2 * Math.PI) / this.polygonSteps; angle < (2 * Math.PI); angle += (2 * Math.PI) / this.polygonSteps) {
 				double[] point = getPoint(center, convertedRadius, angle);
-				polygon += "," + point[0] + " " + point[1];
+				polygon += "," + String.format("%f", point[0]) + " " + String.format("%f", point[1]);
 			}
 			polygon += "," + firstPoint[0] + " " + firstPoint[1];
 			
 			EntityList<Location> pois = sts.locations().query().filter("st_within(location, geography'POLYGON ((" + polygon + "))')").list();
 			
-			List<Long> ids = new ArrayList<Long>();
+			List<Id> ids = new ArrayList<Id>();
 			for (Location poi : pois) {
 				Utility.LOG.info("found: ({},{}) at {}", poi.getId(), poi.getName(), poi.getLocation());
-				ids.add((long) poi.getId().getValue());
+				ids.add(poi.getId());
 			}
 
 			return ids;
@@ -241,9 +236,9 @@ public class DefaultLocationService implements LocationService {
 		}
 		
 		return null;
+		
 	}
 
-	@Override
 	public double calculateDistance(double[] pointA, double[] pointB) {
 
 		// Using haversine formula with R=6371km
