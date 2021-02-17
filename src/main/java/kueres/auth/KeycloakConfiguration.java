@@ -31,7 +31,7 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	private String keycloakUrl;
 	
 	@Bean
-	private CorsConfigurationSource corsConfigurationSource() {
+	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", this.keycloakUrl));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
