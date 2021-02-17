@@ -19,8 +19,8 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,13 +31,14 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	private String keycloakUrl;
 	
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", this.keycloakUrl));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+	public CorsFilter corsFilter() {
+	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    final CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowCredentials(true);
+	    config.setAllowedOrigins(Arrays.asList("http://localhost:8080", this.keycloakUrl));
+	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+	    source.registerCorsConfiguration("/**", config);
+	    return new CorsFilter(source);
 	}
 	
 	@Override
