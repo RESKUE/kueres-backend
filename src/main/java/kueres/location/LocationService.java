@@ -9,10 +9,10 @@ public interface LocationService {
 	public double[] addressToCoordinates(String address);
 	public String coordinatesToAddress(double[] coordinates);
 	
-	public Id addPOI(String name, double[] coordinates);
-	public void removePOI(Id id);
+	public void addPOI(long id, String name, double[] coordinates);
+	public void removePOI(long id);
 	
-	public List<Id> findInRadius(double radius, double[] center);
+	public List<Long> findInRadius(double radius, double[] center);
 	
 	public double calculateDistance(double[] pointA, double[] pointB);
 	

@@ -152,7 +152,7 @@ public class DefaultLocationService implements LocationService {
 	}
 
 	
-	public Id addPOI(String name, double[] coordinates) {
+	public void addPOI(long id, String name, double[] coordinates) {
 
 		try {
 
@@ -172,7 +172,7 @@ public class DefaultLocationService implements LocationService {
 			poi.getLocations().add(poiLocation);
 			sts.things().create(poi);
 			
-			return poi.getId();
+			//return poi.getId();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -180,11 +180,11 @@ public class DefaultLocationService implements LocationService {
 			e.printStackTrace();
 		}
 		
-		return null;
+		//return null;
 
 	}
 
-	public void removePOI(Id id) {
+	public void removePOI(long id) {
 
 		try {
 
@@ -201,7 +201,7 @@ public class DefaultLocationService implements LocationService {
 
 	}
 
-	public List<Id> findInRadius(double radius, double[] center) {
+	public List<Long> findInRadius(double radius, double[] center) {
 		
 		try {
 
@@ -227,7 +227,7 @@ public class DefaultLocationService implements LocationService {
 				ids.add(poi.getId());
 			}
 
-			return ids;
+			//return ids;
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
