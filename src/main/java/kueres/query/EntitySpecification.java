@@ -50,12 +50,6 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 			case MATCH:
 				predicates.add(criteriaBuilder.like(root.get(criteria.getKey()), "%" + criteria.getValue().toString() + "%"));
 				break;
-			case IN:
-				predicates.add(criteriaBuilder.in(root.get(criteria.getKey())).value(criteria.getValue()));
-				break;
-			case NOT_IN:
-				predicates.add(criteriaBuilder.not(root.get(criteria.getKey())).in(criteria.getValue()));
-				break;
 			}
 		}
 		

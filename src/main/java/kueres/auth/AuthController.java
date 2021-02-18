@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -80,16 +79,16 @@ public class AuthController {
 			}
 			
 			
-			Utility.LOG.info("------------------------");
-			Utility.LOG.info("Request URL: {}", request.getRequestURL());
-			Utility.LOG.info("Http method: {}", httpMethod);
-			Utility.LOG.info("Request route: {}", requestRoute);
-			Utility.LOG.info("Query params: {}", queryParams);
-			Utility.LOG.info("New route: {}", newRoute);
-			Utility.LOG.info("Headers: {}", headers);
-			Utility.LOG.info("Content type: {}", contentType);
-			Utility.LOG.info("Body: {}", parameters);
-			Utility.LOG.info("------------------------");
+//			Utility.LOG.info("------------------------");
+//			Utility.LOG.info("Request URL: {}", request.getRequestURL());
+//			Utility.LOG.info("Http method: {}", httpMethod);
+//			Utility.LOG.info("Request route: {}", requestRoute);
+//			Utility.LOG.info("Query params: {}", queryParams);
+//			Utility.LOG.info("New route: {}", newRoute);
+//			Utility.LOG.info("Headers: {}", headers);
+//			Utility.LOG.info("Content type: {}", contentType);
+//			Utility.LOG.info("Body: {}", parameters);
+//			Utility.LOG.info("------------------------");
 			
 			URL url = new URL(newRoute);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -108,7 +107,7 @@ public class AuthController {
 					urlParameters += entry.getKey() + "=" + entry.getValue() + "&";
 				}
 				urlParameters = urlParameters.substring(0, urlParameters.length() - 1);
-				Utility.LOG.info("url parameters: {}", urlParameters);
+//				Utility.LOG.info("url parameters: {}", urlParameters);
 				byte[] data = urlParameters.getBytes();
 				DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 				writer.write(data);
@@ -133,7 +132,7 @@ public class AuthController {
 
 			String responseContent = content.toString();
 			
-			Utility.LOG.info("response: {}", responseContent);
+//			Utility.LOG.info("response: {}", responseContent);
 			
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseContent);
 			
