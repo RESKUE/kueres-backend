@@ -92,9 +92,7 @@ public class EventController {
 			pageable = PageRequest.of(page.get(), size.get());
 		}
 		
-//		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
-		
-		return service.findAll(specification, pageable);
+		return service.findAll(specification, sorting, pageable);
 		
 	}
 	
