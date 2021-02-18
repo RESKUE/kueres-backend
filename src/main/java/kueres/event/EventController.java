@@ -84,7 +84,7 @@ public class EventController {
 		
 		Sort sorting = Sort.unsorted();		// default sort
 		int pageNumber = 0;					// default page number, starts at 0
-		int pageSize = Integer.MAX_VALUE;	// default page size, might change to 20
+		int pageSize = 25;					// default page size, 25
 		
 		if (sort.isPresent()) {
 			sorting = SortBuilder.buildSort(sort.get());
