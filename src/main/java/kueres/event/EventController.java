@@ -82,17 +82,23 @@ public class EventController {
 			}
 		}
 		
-		Sort sorting = Sort.unsorted();
+		Sort sorting = Sort.unsorted();		// default sort
+		int pageNumber = 0;					// default page number, starts at 0
+		int pageSize = 25;					// default page size, 25
+		
 		if (sort.isPresent()) {
 			sorting = SortBuilder.buildSort(sort.get());
 		}
-		
-		Pageable pageable = Pageable.unpaged();
-		if (page.isPresent() && size.isPresent()) {
-			pageable = PageRequest.of(page.get(), size.get());
+		if (page.isPresent()) {
+			pageNumber = page.get();
+		}
+		if (size.isPresent()) {
+			pageSize = size.get();
 		}
 		
-		return service.findAll(specification, sorting, pageable);
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sorting);
+		
+		return service.findAll(specification, pageable);
 		
 	}
 	

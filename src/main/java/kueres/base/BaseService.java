@@ -1,16 +1,12 @@
 package kueres.base;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -56,27 +52,9 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 				this.objectWriter.writeValueAsString(event));
 	}
 	
-	public Page<E> findAll(EntitySpecification<E> specification, Sort sorting, Pageable pageable) {
+	public Page<E> findAll(EntitySpecification<E> specification, Pageable pageable) {
 		
-		if (sorting != null && pageable == null) {
-			List<E> result = repository.findAll(specification, sorting);
-			return new PageImpl<E>(result);
-		} else if (sorting == null && pageable != null) {
-			return repository.findAll(specification, pageable);
-		} else if (sorting != null && pageable != null) {
-			if (sorting.isUnsorted()) {
-				return repository.findAll(specification, pageable);
-			} else if (pageable.isUnpaged()) {
-				List<E> result = repository.findAll(specification, sorting);
-				return new PageImpl<E>(result);
-			} else {
-				pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
-				return repository.findAll(specification, pageable);
-			}
-		} else {
-			List<E> result = repository.findAll(specification);
-			return new PageImpl<E>(result);
-		}
+		return repository.findAll(specification, pageable);
 		
 	}
 	
