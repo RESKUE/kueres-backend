@@ -50,13 +50,15 @@ public class AuthController {
 			String contentType = request.getContentType();
 			Map<String, String> parameters = new HashMap<String, String>();
 			
-			if (contentType.equals("application/x-www-form-urlencoded")) {
-				
-				Enumeration<String> parameterNames = request.getParameterNames();
-				if (parameterNames != null) {
-					while (parameterNames.hasMoreElements()) {
-						String parameterName = parameterNames.nextElement();
-						parameters.put(parameterName, request.getParameter(parameterName));
+			if (contentType != null) {
+				if (contentType.equals("application/x-www-form-urlencoded")) {
+					
+					Enumeration<String> parameterNames = request.getParameterNames();
+					if (parameterNames != null) {
+						while (parameterNames.hasMoreElements()) {
+							String parameterName = parameterNames.nextElement();
+							parameters.put(parameterName, request.getParameter(parameterName));
+						}
 					}
 				}
 			}
