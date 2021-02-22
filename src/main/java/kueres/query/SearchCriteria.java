@@ -1,7 +1,5 @@
 package kueres.query;
 
-import kueres.utility.Utility;
-
 public class SearchCriteria {
 
 	private String key;
@@ -9,24 +7,27 @@ public class SearchCriteria {
 	private SearchOperation operation;
 	
 	public SearchCriteria(String filter) {
+		
 		String[] keyAndValue = filter.split(SearchOperation.getOperationSetRegex());
 		if (keyAndValue.length == 2) {
 			this.key = keyAndValue[0];
 			this.value = keyAndValue[1];
 			this.operation = SearchOperation.getOperation(filter.charAt(this.key.length()));
-			Utility.LOG.info("key: {}, value: {}, operation: {}", key, value, operation);
 			if (operation == null) {
 				throw new IllegalArgumentException("Incorrect filter format");
 			}
 		} else {
 			throw new IllegalArgumentException("Incorrect filter format");
 		}
+		
 	}
 	
 	public SearchCriteria(String key, Object value, SearchOperation operation) {
+		
 		this.key = key;
 		this.value = value;
 		this.operation = operation;
+		
 	}
 	
 	public String getKey() { return this.key; }

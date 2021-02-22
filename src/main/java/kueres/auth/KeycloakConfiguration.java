@@ -25,8 +25,7 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		super.configure(http);
-		http.authorizeRequests().antMatchers("**/api/**").authenticated();
-		//http.authorizeRequests().anyRequest().authenticated();
+		http.authorizeRequests().anyRequest().authenticated();
 		http.csrf().disable();
 		
 	}
@@ -51,7 +50,9 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	
 	@Bean
 	public KeycloakConfigResolver keycloakConfigResolver() {
+		
 	    return new KeycloakSpringBootConfigResolver();
+	    
 	}
 	
 }

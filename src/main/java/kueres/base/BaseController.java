@@ -9,9 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kueres.query.EntitySpecification;
-import kueres.query.SearchCriteria;
 import kueres.query.SortBuilder;
+import kueres.utility.Utility;
 
 public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepository<E>, S extends BaseService<E, R>> {
 
@@ -35,36 +33,20 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@GetMapping()
 	@RolesAllowed({"administrator", "helper"})
 	public Page<E> findAll(
-			@RequestParam Optional<String> filter,
+			@RequestParam Optional<String[]> filter,
 			@RequestParam Optional<String[]> sort,
 			@RequestParam Optional<Integer> page,
 			@RequestParam Optional<Integer> size
 			) {
 		
+		Utility.LOG.trace("BaseController.findAll called.");
+		
 		EntitySpecification<E> specification = null;
 		if (filter.isPresent()) {
-			String[] filters = filter.get().split(",");
-			specification = new EntitySpecification<E>();
-			for (String searchFilter : filters) {
-				specification.add(new SearchCriteria(searchFilter));
-			}
-		}
-
-		Sort sorting = Sort.unsorted();		// default sort
-		int pageNumber = 0;					// default page number, starts at 0
-		int pageSize = 25;					// default page size, 25
-		
-		if (sort.isPresent()) {
-			sorting = SortBuilder.buildSort(sort.get());
-		}
-		if (page.isPresent()) {
-			pageNumber = page.get();
-		}
-		if (size.isPresent()) {
-			pageSize = size.get();
+			specification = new EntitySpecification<E>(filter.get());
 		}
 		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, sorting);
+		Pageable pageable = SortBuilder.buildPageable(sort, page, size);
 	
 		return service.findAll(specification, pageable);
 		
@@ -73,6 +55,8 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@GetMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed({"administrator", "helper"})
 	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) long id) {
+		
+		Utility.LOG.trace("BaseController.findById called.");
 		
 		E entity = service.findById(id);
 		return ResponseEntity.ok().body(entity);
@@ -83,6 +67,8 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@RolesAllowed("administrator")
 	public E create(@Valid @RequestBody E entity) {
 		
+		Utility.LOG.trace("BaseController.create called.");
+		
 		return service.create(entity);
 		
 	}
@@ -90,6 +76,8 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) long id, @Valid @RequestBody E details) {
+		
+		Utility.LOG.trace("BaseController.update called.");
 		
 		E updatedEntity = service.update(id, details);
 		return ResponseEntity.ok().body(updatedEntity);
@@ -99,6 +87,8 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
+		
+		Utility.LOG.trace("BaseController.delete called.");
 		
 		service.delete(id);
 		

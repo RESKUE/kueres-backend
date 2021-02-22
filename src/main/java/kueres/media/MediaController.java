@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kueres.base.BaseController;
 import kueres.base.BaseEntity;
+import kueres.utility.Utility;
 
 @RestController
 @RequestMapping(BaseController.API_ENDPOINT + MediaController.ROUTE)
@@ -36,6 +37,8 @@ public class MediaController {
 	@RolesAllowed({"administrator", "helper"})
     public ResponseEntity<Long> upload(@Valid @RequestBody MultipartFile file) {
 		
+		Utility.LOG.trace("MediaController.upload called");
+		
 		MediaEntity media = service.save(file);
 		if (media != null) {
 			return ResponseEntity.ok().body(media.getId());
@@ -48,6 +51,8 @@ public class MediaController {
 	@GetMapping(value = "/{" + MediaEntity.ID + "}", produces = MediaType.ALL_VALUE)
 	@RolesAllowed({"administrator", "helper"})
 	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) long id) {
+		
+		Utility.LOG.trace("MediaController.download called");
 		
 		MediaEntity media = service.findById(id);
 		FileSystemResource file = service.getFileById(id);
@@ -62,6 +67,8 @@ public class MediaController {
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
+		
+		Utility.LOG.trace("MediaController.delete called");
 		
 		boolean deletedFile = service.delete(id);
 		

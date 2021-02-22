@@ -12,49 +12,65 @@ import org.springframework.data.jpa.domain.Specification;
 
 import kueres.base.BaseEntity;
 
-/*
- * ToDo: test search operations
- */
-
-@SuppressWarnings("serial")
 public class EntitySpecification<E extends BaseEntity<E>> implements Specification<E> {
 
+	private static final long serialVersionUID = -5534647128088932132L;
+	
 	private List<SearchCriteria> params;
-
+	
 	public EntitySpecification() {
+		
 		params = new ArrayList<SearchCriteria>();
+		
 	}
-
+	
+	public EntitySpecification(String[] filter) {
+		
+		params = new ArrayList<SearchCriteria>();
+		for (String searchFilter : filter) {
+			this.add(new SearchCriteria(searchFilter));
+		}
+		
+	}
+	
 	public void add(SearchCriteria criteria) {
+		
 		this.params.add(criteria);
+		
 	}
 	
 	@Override
 	public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 		
-		List<Predicate> predicates = new ArrayList<Predicate>();
-		for (SearchCriteria criteria : this.params) {
-			switch (criteria.getOperation()) {
+		Predicate[] predicates = new Predicate[this.params.size()];
+		for (int i = 0; i < this.params.size(); i++) {
+			switch (this.params.get(i).getOperation()) {
 			case GREATER_THAN:
-				predicates.add(criteriaBuilder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString()));
+				predicates[i] = criteriaBuilder.greaterThan(root.get(this.params.get(i).getKey()), this.params.get(i).getValue().toString());
 				break;
 			case LESS_THAN:
-				predicates.add(criteriaBuilder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString()));
+				predicates[i] = criteriaBuilder.lessThan(root.get(this.params.get(i).getKey()), this.params.get(i).getValue().toString());
 				break;
 			case NOT_EQUAL:
-				predicates.add(criteriaBuilder.notEqual(root.get(criteria.getKey()), criteria.getValue().toString()));
+				predicates[i] = criteriaBuilder.notEqual(root.get(this.params.get(i).getKey()), this.params.get(i).getValue());
 				break;
 			case EQUAL:
-				predicates.add(criteriaBuilder.equal(root.get(criteria.getKey()), criteria.getValue().toString()));
+				predicates[i] = criteriaBuilder.equal(root.get(this.params.get(i).getKey()), this.params.get(i).getValue());
 				break;
 			case MATCH:
-				predicates.add(criteriaBuilder.like(root.get(criteria.getKey()), "%" + criteria.getValue().toString() + "%"));
+				predicates[i] = criteriaBuilder.like(root.get(this.params.get(i).getKey()), "%" + this.params.get(i).getValue().toString() + "%");
+				break;
+			case IN:
+				predicates[i] = criteriaBuilder.isMember(this.params.get(i).getValue(), root.get(this.params.get(i).getKey()));
+				break;
+			case NOT_IN:
+				predicates[i] = criteriaBuilder.isNotMember(this.params.get(i).getValue(), root.get(this.params.get(i).getKey()));
 				break;
 			}
 		}
 		
-		return criteriaBuilder.and((Predicate[]) predicates.toArray());
+		return criteriaBuilder.and(predicates);
 		
 	}
-
+	
 }

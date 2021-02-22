@@ -5,6 +5,8 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import kueres.utility.Utility;
+
 public abstract class EventSubscriber {
 
 	@Autowired
@@ -23,6 +25,8 @@ public abstract class EventSubscriber {
 
 	protected void startReceivingEvents() {
 
+		Utility.LOG.trace("EventSubscriber.startReceivingEvents called");
+		
 		this.queue = new Queue(this.identifier, false, false, false);
 		this.binding = new Binding(
 				this.identifier, 
@@ -38,6 +42,8 @@ public abstract class EventSubscriber {
 	}
 
 	protected void stopReceivingEvents() {
+		
+		Utility.LOG.trace("EventSubscriber.stopReceivingEvents called");
 
 		this.eventConsumer.unsubscribe(this.identifier);
 
@@ -46,12 +52,8 @@ public abstract class EventSubscriber {
 
 	}
 
-	public String getIdentifier() {
-		return this.identifier;
-	}
+	public String getIdentifier() { return this.identifier; }
 
-	public String getRoutingKey() {
-		return this.routingKey;
-	}
+	public String getRoutingKey() { return this.routingKey; }
 
 }

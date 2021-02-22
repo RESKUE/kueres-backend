@@ -48,7 +48,7 @@
 //		String name = "test";
 //		double[] point = new double[] {0, 0};
 //		
-//		List<Id> ids = this.service.findInRadius(100, point);
+//		List<Id> ids = this.service.findInRadius(1, point);
 //		assertThat(ids).isEmpty();
 //		
 //		Id id = this.service.addPOI(name, point);

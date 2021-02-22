@@ -24,6 +24,8 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 	@Override
 	public String save(long id, byte[] content) {
 		
+		Utility.LOG.trace("DefaultFileSystemRepository.save called");
+		
 		File mediaDir = new File(this.MEDIA_DIR);
 		if (!mediaDir.exists()) {
 			
@@ -61,6 +63,8 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 	@Override
 	public FileSystemResource findByLocation(String location) {
 		
+		Utility.LOG.trace("DefaultFileSystemRepository.findByLocation called");
+		
 		File file = new File(location);
 		if (file.exists()) {
 			
@@ -77,6 +81,8 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 	
 	@Override
 	public boolean delete(String location) {
+		
+		Utility.LOG.trace("DefaultFileSystemRepository.delete called");
 		
 		FileSystemResource file = findByLocation(location);
 		file.getFile().delete();

@@ -40,6 +40,8 @@ public class DefaultLocationService implements LocationService {
 
 	public double[] addressToCoordinates(String address) {
 
+		Utility.LOG.trace("DefaultLocationService.addressToCoordinates called");
+		
 		String transformedAddress = address.replace(" ", "+");
 		String queryUrl = this.nominatimUrl + "/search?q=" + transformedAddress + "&format=json";
 
@@ -97,10 +99,13 @@ public class DefaultLocationService implements LocationService {
 		}
 
 		return null;
+		
 	}
 
 	public String coordinatesToAddress(double[] coordinates) {
 
+		Utility.LOG.trace("DefaultLocationService.coordinatesToAddress called");
+		
 		if (coordinates == null || coordinates.length != 2) {
 			Utility.LOG.info("Coordinates not in correct format");
 			return "";
@@ -149,11 +154,14 @@ public class DefaultLocationService implements LocationService {
 		}
 
 		return null;
+		
 	}
 
 	
-	public void addPOI(long id, String name, double[] coordinates) {
+	public Id addPOI(String name, double[] coordinates) {
 
+		Utility.LOG.trace("DefaultLocationService.addPOI called");
+		
 		try {
 
 			URL frostEndpoint = new URL(this.frostUrl);
@@ -172,7 +180,8 @@ public class DefaultLocationService implements LocationService {
 			poi.getLocations().add(poiLocation);
 			sts.things().create(poi);
 			
-			//return poi.getId();
+			Utility.LOG.info("id: {}", poi.getId());
+			return poi.getId();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -180,18 +189,20 @@ public class DefaultLocationService implements LocationService {
 			e.printStackTrace();
 		}
 		
-		//return null;
+		return null;
 
 	}
 
-	public void removePOI(long id) {
+	public void removePOI(Id id) {
 
+		Utility.LOG.trace("DefaultLocationService.removePOI called");
+		
 		try {
 
 			URL frostEndpoint = new URL(this.frostUrl);
 			SensorThingsService sts = new SensorThingsService(frostEndpoint);
 			Thing thing = sts.things().find(id);
-			sts.things().delete(thing);
+			sts.delete(thing);
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -201,7 +212,9 @@ public class DefaultLocationService implements LocationService {
 
 	}
 
-	public List<Long> findInRadius(double radius, double[] center) {
+	public List<Id> findInRadius(double radius, double[] center) {
+		
+		Utility.LOG.trace("DefaultLocationService.findInRadius called");
 		
 		try {
 
@@ -227,7 +240,7 @@ public class DefaultLocationService implements LocationService {
 				ids.add(poi.getId());
 			}
 
-			//return ids;
+			return ids;
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -241,6 +254,8 @@ public class DefaultLocationService implements LocationService {
 
 	public double calculateDistance(double[] pointA, double[] pointB) {
 
+		Utility.LOG.trace("DefaultLocationService.calculateDistance called");
+		
 		// Using haversine formula with R=6371km
 		double deltaLatRadians = (pointB[0] - pointA[0]) * (Math.PI / 180);
 		double deltaLonRadians = (pointB[1] - pointA[1]) * (Math.PI / 180);
@@ -256,9 +271,12 @@ public class DefaultLocationService implements LocationService {
 		double d = this.radiusEarth * c;
 
 		return d;
+		
 	}
 	
 	private double[] getPoint(double[] center, double radius, double angle) {
+		
+		Utility.LOG.trace("DefaultLocationService.getPoint called");
 		
 		double x = center[0] + (radius * Math.sin(angle));
 		double y = center[1] + (radius * Math.cos(angle));

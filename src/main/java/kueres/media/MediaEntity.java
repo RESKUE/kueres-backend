@@ -36,8 +36,10 @@ public class MediaEntity extends BaseEntity<MediaEntity> {
 	
 	@Override
 	public void applyPatch(MediaEntity details) {
+		
 		Utility.LOG.error("MediaEntities can not be updated");
 		throw new UnsupportedOperationException("MediaEntities can not be updated!");
+		
 	}
 	
 }

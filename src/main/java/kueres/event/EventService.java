@@ -2,7 +2,6 @@ package kueres.event;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -28,15 +27,6 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 		
 		EventEntity event = getEntityFromJSON(eventJSON);
 		this.create(event);
-	}
-	
-	public void sendEvent(EventEntity event) throws AmqpException, JsonProcessingException {	
-		
-		this.sendEvent(
-				event.getMessage(), 
-				event.getType(), 
-				event.getSender(),
-				event.getEntityJSON());
 		
 	}
 

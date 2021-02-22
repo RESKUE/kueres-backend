@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import kueres.base.BaseEntity;
+import kueres.utility.Utility;
 
 @Entity
 public class EventEntity extends BaseEntity<EventEntity> {
@@ -42,24 +43,10 @@ public class EventEntity extends BaseEntity<EventEntity> {
 	
 	@Override
 	public void applyPatch(EventEntity details) {
-		String message = details.getMessage();
-		int type = details.getType();
-		String sender = details.getSender();
-		String entityJSON = details.getEntityJSON();
-		Date sendAt = details.getSendAt();
-		if (message != null) {
-			this.setMessage(message);
-		}
-		this.setType(type);
-		if (sender != null) {
-			this.setSender(sender);
-		}
-		if (entityJSON != null) {
-			this.setEntityJSON(entityJSON);
-		}
-		if (sendAt != null) {
-			this.setSendAt(sendAt);
-		}
+		
+		Utility.LOG.error("EventEntities can not be updated");
+		throw new UnsupportedOperationException("EventEntities can not be updated!");
+		
 	}
 
 }

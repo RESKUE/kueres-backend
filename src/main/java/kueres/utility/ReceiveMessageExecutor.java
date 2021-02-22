@@ -1,9 +1,9 @@
 package kueres.utility;
 
-import org.springframework.amqp.core.Message;
+import kueres.event.EventEntity;
 
 public interface ReceiveMessageExecutor {
 
-	public void execute(Message messageObject, String message, String senderIdentifier);
+	public void execute(EventEntity event);
 	
 }
