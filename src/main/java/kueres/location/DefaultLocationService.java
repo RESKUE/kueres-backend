@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
-import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
@@ -158,7 +157,7 @@ public class DefaultLocationService implements LocationService {
 	}
 
 	
-	public Id addPOI(String name, double[] coordinates) {
+	public String addPOI(String name, double[] coordinates) {
 
 		Utility.LOG.trace("DefaultLocationService.addPOI called");
 		
@@ -181,7 +180,7 @@ public class DefaultLocationService implements LocationService {
 			sts.things().create(poi);
 			
 			Utility.LOG.info("id: {}", poi.getId());
-			return poi.getId();
+			return poi.getId().getJson();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -193,7 +192,7 @@ public class DefaultLocationService implements LocationService {
 
 	}
 
-	public void removePOI(Id id) {
+	public void removePOI(String id) {
 
 		Utility.LOG.trace("DefaultLocationService.removePOI called");
 		
@@ -212,7 +211,7 @@ public class DefaultLocationService implements LocationService {
 
 	}
 
-	public List<Id> findInRadius(double radius, double[] center) {
+	public List<String> findInRadius(double radius, double[] center) {
 		
 		Utility.LOG.trace("DefaultLocationService.findInRadius called");
 		
@@ -234,10 +233,10 @@ public class DefaultLocationService implements LocationService {
 			
 			EntityList<Location> pois = sts.locations().query().filter("st_within(location, geography'POLYGON ((" + polygon + "))')").list();
 			
-			List<Id> ids = new ArrayList<Id>();
+			List<String> ids = new ArrayList<String>();
 			for (Location poi : pois) {
 				Utility.LOG.info("found: ({},{}) at {}", poi.getId(), poi.getName(), poi.getLocation());
-				ids.add(poi.getId());
+				ids.add(poi.getId().getJson());
 			}
 
 			return ids;
