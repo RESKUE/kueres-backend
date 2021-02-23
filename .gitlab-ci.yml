@@ -13,7 +13,7 @@ maven-build:
   stage: build
   tags:
     - ILT
-  script: "mvn verify -B -s ci_settings.xml"
+  script: mvn package -Dmaven.test.skip=true -B -s ci_settings.xml
   artifacts:
     paths:
       - ./target/$ARTIFACT_ID-$VERSION.jar
@@ -25,4 +25,5 @@ deploy-maven:
   only:
     - master
   script:
+    - apk add docker-compose
     - 'mvn deploy -B -s ci_settings.xml'
