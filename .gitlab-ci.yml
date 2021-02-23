@@ -13,7 +13,7 @@ maven-build:
   stage: build
   tags:
     - ILT
-  script: mvn package -Dmaven.test.skip=true -B -s ci_settings.xml
+  script: 'mvn package -Dmaven.test.skip=true -B -s ci_settings.xml'
   artifacts:
     paths:
       - ./target/$ARTIFACT_ID-$VERSION.jar
@@ -25,5 +25,6 @@ deploy-maven:
   only:
     - master
   script:
-    - apk add docker-compose
+    - 'sudo curl -L https://github.com/docker/compose/releases/download/1.28.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose'
+    - 'sudo chmod +x /usr/local/bin/docker-compose'
     - 'mvn deploy -B -s ci_settings.xml'
