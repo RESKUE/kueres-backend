@@ -19,10 +19,21 @@ import kueres.eventbus.EventSubscriber;
  * ToDo: update receive message to json string
  */
 
+/**
+ * 
+ * Provides utility functions like logging.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 22, 2021
+ *
+ */
+
 @Service
 public class Utility extends EventSubscriber {
 
 	public static final Logger LOG = (Logger) LoggerFactory.getLogger("logger");
+	
 	private final Logger eventLog = (Logger) LoggerFactory.getLogger("event");
 	
 	private ReceiveMessageExecutor receiveMessageExecutor = 

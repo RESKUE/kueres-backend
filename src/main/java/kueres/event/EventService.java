@@ -26,7 +26,7 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 	public void receiveMessage(@Payload String eventJSON) throws JsonMappingException, JsonProcessingException {
 		
 		EventEntity event = getEntityFromJSON(eventJSON);
-		this.create(event);
+		this.repository.save(event);
 		
 	}
 

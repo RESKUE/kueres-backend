@@ -9,9 +9,24 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * 
+ * Mask outgoing errors.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 22, 2021
+ *
+ */
+
+//TODO: controlleradvice or controller?
+
 @ControllerAdvice
 public class ErrorController {
 
+	/**
+	 * 
+	 */
 	public static final String ROUTE = "/error";
 	
 	@ExceptionHandler

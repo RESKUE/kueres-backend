@@ -1,3 +1,10 @@
+### Custom Services ignores ###
+src/test/resources/services/auth-db/data
+src/test/resources/services/content-db/data
+src/test/resources/services/location-db/data
+src/test/resources/services/rabbitmq/data
+src/test/resources/services/rabbitmq/logs
+
 ### Eclipse ###
 .metadata
 bin/

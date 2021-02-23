@@ -1,8 +1,5 @@
 package kueres.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
@@ -29,27 +26,16 @@ public class EventController extends BaseController<EventEntity, EventRepository
 	@Autowired
 	protected EventService service;
 	
-	@PostMapping("/sendEvent")
-	@RolesAllowed({"administrator"})
-	public Map<String, Boolean> sendEvent(@Valid @RequestBody EventEntity event) {
-	
-		Utility.LOG.trace("EventController.sendEvent called");
-		
-		EventConsumer.sendEvent(event);
-		
-		Map<String, Boolean> response = new HashMap<String, Boolean>();
-		response.put("send", true);
-		return response;
-		
-	}
-	
 	@Override
 	@PostMapping()
 	@RolesAllowed("administrator")
-	public EventEntity create(@Valid @RequestBody EventEntity entity) {
+	public ResponseEntity<EventEntity> create(@Valid @RequestBody EventEntity event) {
 		
-		Utility.LOG.error("EventEntities can not be created manually");
-		throw new UnsupportedOperationException("EventEntities can not be created manually!");
+		Utility.LOG.trace("EventController.create called");
+		
+		EventConsumer.sendEvent(event);
+		
+		return ResponseEntity.ok().body(event);
 		
 	}
 	

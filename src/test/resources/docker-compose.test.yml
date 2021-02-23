@@ -1,0 +1,121 @@
+version: '3'
+services:
+  content-db:
+    image: postgres:latest
+    restart: always
+    environment: 
+      POSTGRES_USER: kueres-test
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_INITDB_ARGS: --auth-local=password
+      POSTGRES_HOST_AUTH_METHOD: password
+      POSTGRES_DB: content_db
+    volumes:
+      - ./services/content-db/data/:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5433:5432
+    networks:
+      - reskue-network
+  auth-db:
+    image: postgres:latest
+    restart: always
+    environment: 
+      POSTGRES_USER: kueres-test
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_INITDB_ARGS: --auth-local=password
+      POSTGRES_HOST_AUTH_METHOD: password
+      POSTGRES_DB: auth_db
+    volumes:
+      - ./services/auth-db/data/:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5434:5432
+    networks:
+      - reskue-network
+  location-db:
+    image: postgis/postgis:11-2.5-alpine
+    restart: always
+    environment: 
+      POSTGRES_USER: kueres-test
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_INITDB_ARGS: --auth-local=password
+      POSTGRES_HOST_AUTH_METHOD: password
+      POSTGRES_DB: location_db
+    volumes:
+      - ./services/location-db/data/:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5435:5432
+    networks:
+      - reskue-network
+  keycloak:
+    image: jboss/keycloak:latest
+    restart: always
+    depends_on: 
+      - auth-db
+    environment: 
+      DB_VENDOR: POSTGRES
+      DB_ADDR: auth-db
+      DB_PORT: 5432
+      DB_DATABASE: auth_db
+      DB_SCHEMA: public
+      DB_USER: kueres-test
+      DB_PASSWORD: 1234
+      KEYCLOAK_USER: kueres-test
+      KEYCLOAK_PASSWORD: 1234
+      KEYCLOAK_IMPORT: ./tmp/realm-export.json
+      KEYCLOAK_FRONTEND_URL: http://localhost:5436/auth/
+    command: -Dkeycloak.profile.feature.upload_scripts=enabled
+    expose: 
+      - 8080
+    ports: 
+      - 5346:8080
+    volumes: 
+      - ./services/keycloak/realms/realm-export.json:/tmp/realm-export.json
+    networks: 
+      - reskue-network
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    environment: 
+      RABBITMQ_DEFAULT_USER: kueres-test
+      RABBITMQ_DEFAULT_PASS: 1234
+    expose: 
+      - 5672
+      - 15672
+    ports:
+      - 5437:5672
+      - 15437:15672
+    volumes:
+      - ./services/rabbitmq/etc/:/etc/rabbitmq/
+      - ./services/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./services/rabbitmq/logs/:/var/log/rabbitmq/
+    networks: 
+      - reskue-network
+  frost:
+    image: fraunhoferiosb/frost-server:latest
+    restart: always
+    depends_on: 
+      - location-db
+    environment:
+      serviceRootUrl: http://localhost:5438/FROST-Server
+      http_cors_enable: 'true'
+      http_cors_allowed.origins: '*'
+      persistence_db_driver: org.postgresql.Driver
+      persistence_db_url: jdbc:postgresql://location-db:5432/location_db
+      persistence_db_username: kueres-test
+      persistence_db_password: 1234
+      persistence_autoUpdateDatabase: 'true'
+    expose:
+      - 8080
+      - 1883
+    ports:
+      - 5438:8080
+      - 5439:1883
+    networks: 
+      - reskue-network
+networks:
+  reskue-network:

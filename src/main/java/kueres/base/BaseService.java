@@ -19,11 +19,32 @@ import kueres.eventbus.EventSubscriber;
 import kueres.query.EntitySpecification;
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The BaseService provides the services needed by a BaseController.
+ * To operate correctly a BaseEntity and its BaseRepository are needed.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 22, 2021
+ *
+ */
+
 public abstract class BaseService<E extends BaseEntity<E>, R extends BaseRepository<E>> extends EventSubscriber {
 	
+	/**
+	 * The BaseRepository of the services' BaseEntity.
+	 */
 	@Autowired
 	protected R repository;
 	
+	/**
+	 * Deserialize the services' BaseEntity from a JSON string.
+	 * @param json - the JSON string
+	 * @return The deserialized entity.
+	 * @throws JsonMappingException when the entity could not be deserialized.
+	 * @throws JsonProcessingException when the entity could not be deserialized.
+	 */
 	@SuppressWarnings("unchecked")
 	public E getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
 		
@@ -33,8 +54,15 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 				json, 
 				(Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
 		
-	};
+	}
 	
+	/**
+	 * Find all entities of the services' BaseEntity-type.
+	 * The result can filtered, sorted and paged.
+	 * @param specification - filter for the result.
+	 * @param pageable - sort and pagination for the result.
+	 * @return The result as a page.
+	 */
 	public Page<E> findAll(EntitySpecification<E> specification, Pageable pageable) {
 		
 		Utility.LOG.trace("BaseService.findAll called.");
@@ -47,7 +75,13 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 	}
 	
-	public E findById(long id) throws ResourceNotFoundException {
+	/**
+	 * Find an entity of the services' BaseEntity-type by its identifier.
+	 * @param id - the entity's identifier.
+	 * @return The entity with the given identifier.
+	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
+	 */
+	public E findById(long id) {
 		
 		Utility.LOG.trace("BaseService.findById called.");
 		
@@ -59,10 +93,20 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 	}
 	
+	/**
+	 * Create an entity of the services' BaseEntity-type.
+	 * @param entity - the entity that should be created. This entity can not have an identifier.
+	 * @return The created entity. This contains the entity's identifier.
+	 */
 	public E create(E entity) {
 		
 		Utility.LOG.trace("BaseService.create called.");
 		
+//		if (entity.getId() != -1) {
+//			Utility.LOG.info(identifier);
+//			throw new 
+//		}
+//		
 		E savedEntity = repository.save(entity);
 		
 		EventConsumer.sendEvent("BaseService.create", EventType.CREATE.type, this.getIdentifier(), EventConsumer.writeObjectAsJSON(savedEntity));
@@ -71,7 +115,15 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 	}
 	
-	public E update(long id, E details) throws ResourceNotFoundException {
+	/**
+	 * Update an entity of the services' BaseEntity-type by its identifier.
+	 * Fields that are not populated in the updated data will not be changed.
+	 * @param id - the identifier of the entity that should be updated.
+	 * @param details - the updated data.
+	 * @return The updated entity.
+	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
+	 */
+	public E update(long id, E details) {
 		
 		Utility.LOG.trace("BaseService.update called.");
 		
@@ -85,7 +137,13 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 	}
 	
-	public E delete(long id) throws ResourceNotFoundException {
+	/**
+	 * Delete an entity of the services' BaseEntity-type by its identifier.
+	 * @param id - the identifier of the entity that should be deleted.
+	 * @return The entity that was deleted.
+	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
+	 */
+	public E delete(long id) {
 		
 		Utility.LOG.trace("BaseService.delete called.");
 		

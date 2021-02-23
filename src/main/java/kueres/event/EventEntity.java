@@ -11,7 +11,7 @@ import kueres.utility.Utility;
 @Entity
 public class EventEntity extends BaseEntity<EventEntity> {
 	
-	@Column(name = "message", nullable = false)
+	@Column(name = "message", nullable = false, columnDefinition="TEXT")
 	private String message = "";
 	public static final String MESSAGE = "message";
 	public String getMessage() { return this.message; }
@@ -29,7 +29,7 @@ public class EventEntity extends BaseEntity<EventEntity> {
 	public String getSender() { return this.sender; }
 	public void setSender(String sender) { this.sender = sender; }
 	
-	@Column(name = "entityJSON", nullable = false)
+	@Column(name = "entityJSON", nullable = false, columnDefinition="TEXT")
 	private String entityJSON = "";
 	public static final String ENTITY_JSON = "entityJSON";
 	public String getEntityJSON() { return this.entityJSON; }

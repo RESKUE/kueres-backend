@@ -15,6 +15,13 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+		<repository>
+			<id>bintray-palantir</id>
+			<url>https://dl.bintray.com/palantir/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
@@ -113,23 +120,23 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 			<exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
-             <groupId>org.junit.jupiter</groupId>
-             <artifactId>junit-jupiter-engine</artifactId>
-             <scope>test</scope>
-         </dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit-test</artifactId>
-			<scope>test</scope>
+			<groupId>com.palantir.docker.compose</groupId>
+			<artifactId>docker-compose-junit-jupiter</artifactId>
+			<version>1.5.0</version>
 		</dependency>
 
 		<dependency>

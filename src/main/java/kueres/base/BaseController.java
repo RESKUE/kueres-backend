@@ -23,13 +23,44 @@ import kueres.query.EntitySpecification;
 import kueres.query.SortBuilder;
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The BaseController provides basic CRUD functionality for a BaseEntity.
+ * To operate correctly it needs a BaseEntity and its BaseRepository and BaseService.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 22, 2021
+ *
+ */
+
 public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepository<E>, S extends BaseService<E, R>> {
 
+	/**
+	 * The prefix for all BaseController routes.
+	 */
 	public static final String API_ENDPOINT = "/api";
 	
+	/**
+	 * The service of the controllers BaseEntity-type.
+	 */
 	@Autowired
 	protected S service;
 	
+	/**
+	 * Find all entities of the controllers BaseEntity-type.
+	 * The result can filtered, sorted and paged.
+	 * <p>
+	 * See kueres.query.SearchCriteria for filter syntax.
+	 * <p>
+	 * See kueres.query.SortBuilder for sort syntax.
+	 * 
+	 * @param filter - the filter options.
+	 * @param sort - the sort options.
+	 * @param page - the number of the page used for pagination.
+	 * @param size - the size of the page used for pagination.
+	 * @return The result as a page.
+	 */
 	@GetMapping()
 	@RolesAllowed({"administrator", "helper"})
 	public Page<E> findAll(
@@ -52,6 +83,11 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 		
 	}
 	
+	/**
+	 * Find an entity of the controllers BaseEntity-type by its identifier.
+	 * @param id - the entity's identifier.
+	 * @return The entity with the given identifier.
+	 */
 	@GetMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed({"administrator", "helper"})
 	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) long id) {
@@ -63,16 +99,29 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 		
 	}
 	
+	/**
+	 * Create an entity of the controllers BaseEntity-type.
+	 * @param entity - the entity that should be created. This entity can not have an identifier.
+	 * @return The created entity. This contains the entity's identifier.
+	 */
 	@PostMapping()
 	@RolesAllowed("administrator")
-	public E create(@Valid @RequestBody E entity) {
+	public ResponseEntity<E> create(@Valid @RequestBody E entity) {
 		
 		Utility.LOG.trace("BaseController.create called.");
 		
-		return service.create(entity);
+		E createdEntity = service.create(entity);
+		return ResponseEntity.ok().body(createdEntity);
 		
 	}
 	
+	/**
+	 * Update an entity of the controllers BaseEntity-type by its identifier.
+	 * Fields that are not populated in the updated data will not be changed.
+	 * @param id - the identifier of the entity that should be updated.
+	 * @param details - the updated data.
+	 * @return The updated entity.
+	 */
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) long id, @Valid @RequestBody E details) {
@@ -84,6 +133,11 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 		
 	}
 	
+	/**
+	 * Delete an entity of the controllers BaseEntity-type by its identifier.
+	 * @param id - the identifier of the entity that should be deleted.
+	 * @return The entity that was deleted.
+	 */
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {

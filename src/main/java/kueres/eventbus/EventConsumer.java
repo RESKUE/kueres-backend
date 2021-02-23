@@ -26,11 +26,15 @@ public class EventConsumer implements MessageListener {
 	private OnMessageExecutor onMessageExecutor = (Message message,
 			Map<String, String> subscribers) -> defaultOnMessageExecutor(message, subscribers);
 
+	private static RabbitTemplate RABBIT_TEMPLATE;
 	@Autowired
-	public static RabbitTemplate rabbitTemplate;
+	private void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
+		EventConsumer.RABBIT_TEMPLATE = rabbitTemplate;
+	}
+	
+	private static ObjectWriter OBJECT_WRITER = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-	public static ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
+	
 	private Map<String, String> subscribers = new HashMap<String, String>();
 
 	public void subscribe(String identifier, String routingKey) {
@@ -77,8 +81,8 @@ public class EventConsumer implements MessageListener {
 		event.setEntityJSON(entityJSON);
 
 		try {
-			rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, RabbitMQConfiguration.DEFAULT_QUEUE,
-					objectWriter.writeValueAsString(event));
+			RABBIT_TEMPLATE.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, RabbitMQConfiguration.DEFAULT_QUEUE,
+					OBJECT_WRITER.writeValueAsString(event));
 		} catch (AmqpException | JsonProcessingException e) {
 			Utility.LOG.error(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,8 +95,8 @@ public class EventConsumer implements MessageListener {
 		Utility.LOG.trace("EventConsumer.sendEvent called");
 		
 		try {
-			rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, RabbitMQConfiguration.DEFAULT_QUEUE,
-					objectWriter.writeValueAsString(event));
+			RABBIT_TEMPLATE.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, RabbitMQConfiguration.DEFAULT_QUEUE,
+					OBJECT_WRITER.writeValueAsString(event));
 		} catch (AmqpException | JsonProcessingException e) {
 			Utility.LOG.error(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,7 +107,7 @@ public class EventConsumer implements MessageListener {
 	public static String writeObjectAsJSON(Object o) {
 		
 		try {
-			return objectWriter.writeValueAsString(o);
+			return OBJECT_WRITER.writeValueAsString(o);
 		} catch (JsonProcessingException e) {
 			Utility.LOG.error(e.getMessage());
 			return "";
@@ -114,7 +118,7 @@ public class EventConsumer implements MessageListener {
 	private void defaultOnMessageExecutor(Message message, Map<String, String> subscribers) {
 
 		subscribers.entrySet().forEach((Entry<String, String> entry) -> {
-			rabbitTemplate.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, entry.getValue(), message);
+			RABBIT_TEMPLATE.convertAndSend(RabbitMQConfiguration.TOPIC_EXCHANGE, entry.getValue(), message);
 		});
 
 	}

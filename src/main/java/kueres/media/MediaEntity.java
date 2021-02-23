@@ -28,7 +28,7 @@ public class MediaEntity extends BaseEntity<MediaEntity> {
 	public String getMimeType() { return this.mimeType; }
 	public void setMimeType(String mimeType) { this.mimeType = mimeType; }
 	
-	@Column(name = "altText", nullable = false)
+	@Column(name = "altText", nullable = false, columnDefinition="TEXT")
 	private String altText = "";
 	public static final String ALT_TEXT = "altText";
 	public String getAltText() { return this.altText; }

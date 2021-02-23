@@ -16,11 +16,25 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+/**
+ * 
+ * Configuration for the connection between the Spring Boot server and the Keycloak service.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 22, 2021
+ *
+ */
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
 public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 	
+	/**
+	 * All requests must be authenticated.
+	 * Disables csrf protection.
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -30,6 +44,11 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 		
 	}
 	
+	/**
+	 * Register Keycloak as the global authentication provider
+	 * @param auth
+	 * @throws Exception
+	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		
@@ -48,6 +67,10 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 		
 	}
 	
+	/**
+	 * Load Keycloak config from application.properties instead of keycloak.json
+	 * @return
+	 */
 	@Bean
 	public KeycloakConfigResolver keycloakConfigResolver() {
 		
