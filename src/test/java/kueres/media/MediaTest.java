@@ -9,13 +9,13 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import org.apache.http.entity.ContentType;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +30,16 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.palantir.docker.compose.DockerComposeExtension;
 
 import kueres.KueresTestInitializer;
+import kueres.KueresTestTerminator;
 
 @SpringBootTest
 @ContextConfiguration(initializers = KueresTestInitializer.class)
+@Import(KueresTestTerminator.class)
 @TestPropertySource(locations="classpath:test.properties")
 @TestInstance(Lifecycle.PER_CLASS)
 public class MediaTest {
-	
-	@Autowired
-	private DockerComposeExtension compose;
 	
 	@Autowired
 	private MediaController controller = new MediaController();
@@ -64,15 +62,6 @@ public class MediaTest {
 		this.logoMultipart = new MockMultipartFile(this.logoFile.getName(), this.logoFile.getName(),
 				ContentType.IMAGE_PNG.toString(), this.logoContent);
 
-	}
-	
-	@AfterAll
-	public void tearDown() {
-		try {
-			compose.dockerCompose().down();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Test

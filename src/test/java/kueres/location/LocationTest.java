@@ -3,45 +3,31 @@ package kueres.location;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import com.palantir.docker.compose.DockerComposeExtension;
-
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import kueres.KueresTestInitializer;
+import kueres.KueresTestTerminator;
 
 @SpringBootTest
 @ContextConfiguration(initializers = KueresTestInitializer.class)
+@Import(KueresTestTerminator.class)
 @TestPropertySource(locations="classpath:test.properties")
 @TestInstance(Lifecycle.PER_CLASS)
 public class LocationTest {
-
-	@Autowired
-	private DockerComposeExtension compose;
 	
 	@Autowired
 	private DefaultLocationService service;
-	
-	@AfterAll
-	public void tearDown() {
-		try {
-			compose.dockerCompose().down();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	@Test
 	public void addressCoordinatesConversion() {
@@ -64,7 +50,6 @@ public class LocationTest {
 	}
 	
 	@Test
-	@Disabled("FROST Client delete thing not working")
 	public void pois() throws MalformedURLException, ServiceFailureException {
 		
 		String name = "test";

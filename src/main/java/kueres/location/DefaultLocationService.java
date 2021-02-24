@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
+import de.fraunhofer.iosb.ilt.sta.model.Id;
 import de.fraunhofer.iosb.ilt.sta.model.Location;
 import de.fraunhofer.iosb.ilt.sta.model.Thing;
 import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
@@ -171,7 +172,6 @@ public class DefaultLocationService implements LocationService {
 			poiLocation.setDescription(name);
 			poiLocation.setEncodingType("application/vnd.geo+json");
 			poiLocation.setLocation(new Point(coordinates[0], coordinates[1]));
-			sts.locations().create(poiLocation);
 			
 			Thing poi = new Thing();
 			poi.setName(name);
@@ -194,14 +194,18 @@ public class DefaultLocationService implements LocationService {
 
 	public void removePOI(String id) {
 
-		Utility.LOG.trace("DefaultLocationService.removePOI called");
+		Utility.LOG.info("DefaultLocationService.removePOI called");
 		
 		try {
 
 			URL frostEndpoint = new URL(this.frostUrl);
 			SensorThingsService sts = new SensorThingsService(frostEndpoint);
-			Thing thing = sts.things().find(id);
+			
+			Thing thing = sts.things().find(Id.tryToParse(id));
 			sts.delete(thing);
+			
+			Location location = sts.locations().find(Id.tryToParse(id));
+			sts.locations().delete(location);
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

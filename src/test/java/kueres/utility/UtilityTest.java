@@ -2,42 +2,28 @@ package kueres.utility;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.palantir.docker.compose.DockerComposeExtension;
-
 import kueres.KueresTestInitializer;
+import kueres.KueresTestTerminator;
 
 @SpringBootTest
 @ContextConfiguration(initializers = KueresTestInitializer.class, classes = KueresConfigurationProperties.class)
+@Import(KueresTestTerminator.class)
 @TestPropertySource(locations="classpath:test.properties")
 @TestInstance(Lifecycle.PER_CLASS)
 public class UtilityTest {
-
-	@Autowired
-	private DockerComposeExtension compose;
 	
 	@Autowired
 	private KueresConfigurationProperties config;
-	
-	@AfterAll
-	public void tearDown() {
-		try {
-			compose.dockerCompose().down();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	@Test
 	public void configGettersAndSetters() {

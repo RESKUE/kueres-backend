@@ -5,6 +5,8 @@ src/test/resources/services/location-db/data
 src/test/resources/services/rabbitmq/data
 src/test/resources/services/rabbitmq/logs
 
+builds/*
+
 ### Eclipse ###
 .metadata
 bin/
