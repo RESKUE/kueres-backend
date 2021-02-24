@@ -1,6 +1,4 @@
-image:
- repository: https://hub.docker.com/r/timengbrocks/maven-docker-compose-ci
- tag: openjdk-11
+image: gitlab-ext.iosb.fraunhofer.de:4567/ilt-pse/ws20_21-mobile-anwendung-zur-unterst-tzung-im-kulturg-terschutz/kueres-backend/maven-docker-compose-cli:openjdk-11
 
 variables:
   GROUP_ID: kueres
