@@ -1,4 +1,6 @@
-image: maven:3.6.3-jdk-11
+image:
+ repository: https://hub.docker.com/r/timengbrocks/maven-docker-compose-ci
+ tag: openjdk-11
 
 variables:
   GROUP_ID: kueres
@@ -25,16 +27,4 @@ deploy-maven:
   only:
     - master
   script:
-    - 'apt update'
-    - 'apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common'
-    - 'curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -'
-    - 'add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"'
-    - 'apt update'
-    - 'apt-cache policy docker-ce'
-    - 'apt install -y docker-ce'
-    - 'service docker status'
-    - 'docker --version'
-    - 'curl -L https://github.com/docker/compose/releases/download/1.28.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose'
-    - 'chmod +x /usr/local/bin/docker-compose'
-    - 'docker-compose --version'
     - 'mvn deploy -B -s ci_settings.xml'
