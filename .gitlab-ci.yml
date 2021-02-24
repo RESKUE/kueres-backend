@@ -1,6 +1,4 @@
-image:
- repository: https://hub.docker.com/r/timengbrocks/maven-docker-compose-ci
- tag: openjdk-11
+image: https://hub.docker.com/r/timengbrocks/maven-docker-compose-ci:openjdk-11
 
 variables:
   GROUP_ID: kueres
