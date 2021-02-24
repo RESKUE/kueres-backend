@@ -42,13 +42,13 @@ import kueres.KueresTestTerminator;
 public class MediaTest {
 	
 	@Autowired
-	private MediaController controller = new MediaController();
+	private MediaController controller;
 
 	@Autowired
-	private MediaService service = new MediaService();
+	private MediaService service;
 
 	@Autowired
-	private DefaultFileSystemRepository repository = new DefaultFileSystemRepository();
+	private DefaultFileSystemRepository repository;
 
 	private File logoFile;
 	private byte[] logoContent;
