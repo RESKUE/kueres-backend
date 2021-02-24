@@ -25,4 +25,4 @@ deploy-maven:
   only:
     - master
   script:
-    - 'mvn deploy -B -s ci_settings.xml'
+    - 'mvn deploy -Dmaven.test.skip=true -B -s ci_settings.xml'
