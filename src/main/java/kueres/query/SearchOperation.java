@@ -71,15 +71,15 @@ public enum SearchOperation {
     
     /**
      * The mapping between search operations and their symbols.
-     * GREATER_THAN: >
-     * LESS_THAN: <
+     * GREATER_THAN: {@literal >}
+     * LESS_THAN: {@literal <}
      * NOT_EQUAL: !
      * EQUAL: =
      * MATCH: ~
      * IN: §
      * NOT_IN: %
-     * @param operation
-     * @return
+     * @param operation - the symbol that should be mapped
+     * @return The search operation for the symbol.
      */
 	public static SearchOperation getOperation(char operation) {
 		

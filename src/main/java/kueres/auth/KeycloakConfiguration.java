@@ -45,9 +45,9 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	}
 	
 	/**
-	 * Register Keycloak as the global authentication provider
-	 * @param auth
-	 * @throws Exception
+	 * Register Keycloak as the global authentication provider.
+	 * @param auth - the AuthenticationManagerBuilder
+	 * @throws Exception when Keycloak could not be registered as the global authentication provider.
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -68,8 +68,8 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 	}
 	
 	/**
-	 * Load Keycloak config from application.properties instead of keycloak.json
-	 * @return
+	 * Load Keycloak config from application.properties instead of keycloak.json.
+	 * @return The KeycloakConfigResolver.
 	 */
 	@Bean
 	public KeycloakConfigResolver keycloakConfigResolver() {

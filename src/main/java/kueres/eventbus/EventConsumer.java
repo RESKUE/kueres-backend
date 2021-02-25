@@ -86,7 +86,7 @@ public class EventConsumer implements MessageListener {
 
 	/**
 	 * Provide a custom implementation to customize how events are distributed to EventSubscribers.
-	 * @param onMessageExecutor
+	 * @param onMessageExecutor - the custom implementation of the OnMessageExecutor
 	 */
 	public void setOnMessageExecutor(OnMessageExecutor onMessageExecutor) {
 		
