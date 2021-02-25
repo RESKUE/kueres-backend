@@ -29,34 +29,34 @@ public class UtilityTest {
 	public void configGettersAndSetters() {
 		
 		String originalMediaDir = (String) ReflectionTestUtils.getField(this.config, "mediaDir");
-		String originalTopicExchange = (String) ReflectionTestUtils.getField(this.config, "topicExchange");
-		String originalDefaultQueue = (String) ReflectionTestUtils.getField(this.config, "defaultQueue");
+		String originalNominatimUrl = (String) ReflectionTestUtils.getField(this.config, "nominatimUrl");
+		String originalFrostUrl = (String) ReflectionTestUtils.getField(this.config, "frostUrl");
 		
 		String getMediaDir = config.getMediaDir();
-		String getTopicExchange = config.getTopicExchange();
-		String getDefaultQueue = config.getDefaultQueue();
+		String getNominatimUrl = config.getNominatimUrl();
+		String getFrostUrl = config.getFrostUrl();
 		
 		assertThat(getMediaDir).isEqualTo(originalMediaDir);
-		assertThat(getTopicExchange).isEqualTo(originalTopicExchange);
-		assertThat(getDefaultQueue).isEqualTo(originalDefaultQueue);
+		assertThat(getNominatimUrl).isEqualTo(originalNominatimUrl);
+		assertThat(getFrostUrl).isEqualTo(originalFrostUrl);
 		
 		String testValue = "testValue";
 		
 		config.setMediaDir(testValue);
-		config.setTopicExchange(testValue);
-		config.setDefaultQueue(testValue);
+		config.setNominatimUrl(testValue);
+		config.setFrostUrl(testValue);
 		
 		String setMediaDir = (String) ReflectionTestUtils.getField(this.config, "mediaDir");
-		String setTopicExchange = (String) ReflectionTestUtils.getField(this.config, "topicExchange");
-		String setDefaultQueue = (String) ReflectionTestUtils.getField(this.config, "defaultQueue");
+		String setNominatimUrl = (String) ReflectionTestUtils.getField(this.config, "nominatimUrl");
+		String setFrostUrl = (String) ReflectionTestUtils.getField(this.config, "frostUrl");
 		
 		assertThat(setMediaDir).isEqualTo(testValue);
-		assertThat(setTopicExchange).isEqualTo(testValue);
-		assertThat(setDefaultQueue).isEqualTo(testValue);
+		assertThat(setNominatimUrl).isEqualTo(testValue);
+		assertThat(setFrostUrl).isEqualTo(testValue);
 		
 		config.setMediaDir(originalMediaDir);
-		config.setTopicExchange(originalTopicExchange);
-		config.setDefaultQueue(originalDefaultQueue);
+		config.setNominatimUrl(originalNominatimUrl);
+		config.setFrostUrl(originalFrostUrl);
 		
 	}
 	
