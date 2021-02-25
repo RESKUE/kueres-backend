@@ -20,6 +20,16 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import kueres.event.EventEntity;
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The EventConsumer receives all events and distributes them to EventSubscribers.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 @Component
 public class EventConsumer implements MessageListener {
 
@@ -37,6 +47,11 @@ public class EventConsumer implements MessageListener {
 	
 	private Map<String, String> subscribers = new HashMap<String, String>();
 
+	/**
+	 * Register an EventSubscriber by providing his identifier and routing key.
+	 * @param identifier - the EventSubscribers' identifier
+	 * @param routingKey - the EventSubscribers' routing key
+	 */
 	public void subscribe(String identifier, String routingKey) {
 
 		Utility.LOG.trace("EventConsumer.subscribe called");
@@ -45,6 +60,10 @@ public class EventConsumer implements MessageListener {
 
 	}
 
+	/**
+	 * Unregister an EventSubscriber by his identifier.
+	 * @param identifier - the EventSubscribers' identifier
+	 */
 	public void unsubscribe(String identifier) {
 
 		Utility.LOG.trace("EventConsumer.unsubscribe called");
@@ -53,6 +72,9 @@ public class EventConsumer implements MessageListener {
 
 	}
 
+	/**
+	 * This method gets called when the EventConsumer receives an event.
+	 */
 	@Override
 	public void onMessage(Message message) {
 
@@ -62,6 +84,10 @@ public class EventConsumer implements MessageListener {
 
 	}
 
+	/**
+	 * Provide a custom implementation to customize how events are distributed to EventSubscribers.
+	 * @param onMessageExecutor
+	 */
 	public void setOnMessageExecutor(OnMessageExecutor onMessageExecutor) {
 		
 		Utility.LOG.trace("EventConsumer.setOnMessageExecutor called");
@@ -70,6 +96,13 @@ public class EventConsumer implements MessageListener {
 
 	}
 
+	/**
+	 * Send an event to the EventConsumer.
+	 * @param message - the events message
+	 * @param type - the event type: see kueres.event.EventType for all types
+	 * @param sender - the identifier of the event sender
+	 * @param entityJSON - JSON representation of the entity that was affected by the event
+	 */
 	public static void sendEvent(String message, int type, String sender, String entityJSON) {
 
 		Utility.LOG.trace("EventConsumer.sendEvent called.");
@@ -90,6 +123,10 @@ public class EventConsumer implements MessageListener {
 
 	}
 	
+	/**
+	 * Send an event to the EventConsumer.
+	 * @param event - the event to be sent
+	 */
 	public static void sendEvent(EventEntity event) {
 		
 		Utility.LOG.trace("EventConsumer.sendEvent called");
@@ -104,6 +141,11 @@ public class EventConsumer implements MessageListener {
 		
 	}
 	
+	/**
+	 * Serialize an object to JSON.
+	 * @param o - the object to be serialized
+	 * @return The objects JSON representation.
+	 */
 	public static String writeObjectAsJSON(Object o) {
 		
 		try {

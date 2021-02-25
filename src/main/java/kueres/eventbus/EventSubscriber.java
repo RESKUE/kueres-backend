@@ -7,6 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import kueres.utility.Utility;
 
+/**
+ * 
+ * Super class for all classes that want to receive events.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 public abstract class EventSubscriber {
 
 	@Autowired
@@ -18,11 +28,26 @@ public abstract class EventSubscriber {
 	private Queue queue;
 	private Binding binding;
 
+	/**
+	 * The subscribers identifier.
+	 */
 	protected String identifier;
+	
+	/**
+	 * The subscribers RabbitMQ routing key.
+	 */
 	protected String routingKey;
 
+	/**
+	 * Implement this method with @PostConstruct
+	 * to set the identifier and routing
+	 * and to start listening to events.
+	 */
 	public abstract void init();
 
+	/**
+	 * Start receiving events.
+	 */
 	protected void startReceivingEvents() {
 
 		Utility.LOG.trace("EventSubscriber.startReceivingEvents called");
@@ -41,6 +66,9 @@ public abstract class EventSubscriber {
 
 	}
 
+	/**
+	 * Stop receiving events.
+	 */
 	protected void stopReceivingEvents() {
 		
 		Utility.LOG.trace("EventSubscriber.stopReceivingEvents called");

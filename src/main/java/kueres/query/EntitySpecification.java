@@ -12,18 +12,36 @@ import org.springframework.data.jpa.domain.Specification;
 
 import kueres.base.BaseEntity;
 
+/**
+ * 
+ * Construct a Predicate from search criteria.
+ * This EntitySpecification can be directly passed to repository requests.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 public class EntitySpecification<E extends BaseEntity<E>> implements Specification<E> {
 
 	private static final long serialVersionUID = -5534647128088932132L;
 	
 	private List<SearchCriteria> params;
 	
+	/**
+	 * Construct an empty entity specification.
+	 */
 	public EntitySpecification() {
 		
 		params = new ArrayList<SearchCriteria>();
 		
 	}
-	
+
+	/**
+	 * Construct an entity specification from a list of filter query parameters.
+	 * @param filter - the filter query parameters
+	 */
 	public EntitySpecification(String[] filter) {
 		
 		params = new ArrayList<SearchCriteria>();
@@ -33,6 +51,10 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 		
 	}
 	
+	/**
+	 * Add a search criterium to the entity specification.
+	 * @param criteria - the search criterium to be added
+	 */
 	public void add(SearchCriteria criteria) {
 		
 		this.params.add(criteria);

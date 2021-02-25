@@ -11,8 +11,25 @@ import org.springframework.data.domain.Sort.Order;
 
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The SortBuilder constructs Spring Sort objects used for sorting repository requests.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 public class SortBuilder {
 
+	/**
+	 * Build a Pageable object from sort, page and size query parameters.
+	 * @param sort - the sort query parameter
+	 * @param page - the page query parameter
+	 * @param size - the size query parameter
+	 * @return A Pageable object representing the supplied query parameters.
+	 */
 	public static Pageable buildPageable(Optional<String[]> sort, Optional<Integer> page, Optional<Integer> size) {
 		
 		Utility.LOG.trace("SortBuilder.buildPageable called");
@@ -35,11 +52,16 @@ public class SortBuilder {
 		
 	}
 	
-	public static Sort buildSort(String[] params) {
+	/**
+	 * Build a Spring Sort Object from the sort query parameter.
+	 * @param sort - the sort query parameter
+	 * @return The Spring Sort Object representing the query parameter.
+	 */
+	public static Sort buildSort(String[] sort) {
 		
 		Utility.LOG.trace("SortBuilder.buildSort called");
 		
-		return Sort.by(assembleOrders(params));
+		return Sort.by(assembleOrders(sort));
 		
 	}
 	

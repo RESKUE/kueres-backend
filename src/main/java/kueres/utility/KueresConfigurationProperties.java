@@ -2,24 +2,40 @@ package kueres.utility;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/*
- * ToDo: add config properties for location service
- * ToDo: remove rabbit config properties
+/**
+ * 
+ * Provide all custom configuration options that can be set in application.properties.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 24, 2021
+ *
  */
 
 @ConfigurationProperties(prefix = "kueres")
 public class KueresConfigurationProperties {
 
+	/**
+	 * The local path for the media directory.
+	 */
 	private String mediaDir;
-	private String topicExchange;
-	private String defaultQueue;
+	
+	/**
+	 * The URL to a Nominatim server.
+	 */
+	private String nominatimUrl;
+	
+	/**
+	 * The URL to the local FROST service.
+	 */
+	private String frostUrl;
 	
 	public String getMediaDir() { return this.mediaDir; }
-	public String getTopicExchange() { return this.topicExchange; }
-	public String getDefaultQueue() { return this.defaultQueue; }
+	public String getNominatimUrl() { return this.nominatimUrl; }
+	public String getFrostUrl() { return this.frostUrl; }
 	
 	public void setMediaDir(String mediaDir) { this.mediaDir = mediaDir; }
-	public void setTopicExchange(String topicExchange) { this.topicExchange = topicExchange; }
-	public void setDefaultQueue(String defaultQueue) { this.defaultQueue = defaultQueue; }
+	public void setNominatimUrl(String nominatimUrl) { this.nominatimUrl = nominatimUrl; }
+	public void setFrostUrl(String frostUrl) { this.frostUrl = frostUrl; }
 	
 }

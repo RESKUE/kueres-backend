@@ -19,16 +19,15 @@ import org.springframework.web.server.ResponseStatusException;
  *
  */
 
-//TODO: controlleradvice or controller?
-
 @ControllerAdvice
 public class ErrorController {
-
-	/**
-	 * 
-	 */
-	public static final String ROUTE = "/error";
 	
+	/**
+	 * Catch errors and mask them to hide the stack trace.
+	 * @param e - the thrown exception
+	 * @return The masked error output.
+	 * @throws ResponseStatusException when the exception could not be read.
+	 */
 	@ExceptionHandler
     public ResponseEntity<String> error(Exception e) throws ResponseStatusException {
 		

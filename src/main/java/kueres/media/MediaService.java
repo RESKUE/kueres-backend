@@ -20,6 +20,16 @@ import kueres.eventbus.EventConsumer;
 import kueres.eventbus.EventSubscriber;
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The MediaService provides services needed by the MediaController.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 @Service
 public class MediaService extends EventSubscriber {
 	
@@ -29,6 +39,9 @@ public class MediaService extends EventSubscriber {
 	@Autowired
 	private FileSystemRepository fileSystemRepository;
 	
+	/**
+	 * Set this services' identifier and routing key.
+	 */
 	@PostConstruct
 	@Override
 	public void init() {
@@ -38,6 +51,11 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Save a file.
+	 * @param multipartFile - the file to be saved
+	 * @return The MediaEntity corresponding to the file.
+	 */
 	public MediaEntity save(MultipartFile multipartFile) {
 		
 		Utility.LOG.trace("MediaService.save called");
@@ -68,6 +86,11 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Get a file by its identifier.
+	 * @param id - the files identifier
+	 * @return The file specified by the identifier.
+	 */
 	public FileSystemResource getFileById(long id) {
 		
 		Utility.LOG.trace("MediaService.getFileById called");
@@ -78,6 +101,11 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Find a MediaEntity by its identifier.
+	 * @param id - the MediaEntitys identifier
+	 * @return The MediaEntity specified by the identifier.
+	 */
 	public MediaEntity findById(long id) {
 		
 		Utility.LOG.trace("MediaService.findById called");
@@ -90,6 +118,11 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Delete a file and its MediaEntity by its identifier.
+	 * @param id - the files/MediaEntitys identifier
+	 * @return If the file and MediaEntity were successfully deleted.
+	 */
 	public boolean delete(long id) {
 		
 		Utility.LOG.trace("MediaService.delete called");
@@ -107,6 +140,10 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Provide a custom implementation of the FileSystemRepository to customize how files are saved.
+	 * @param fileSystemRepository - the custom implementation of the FileSystemRepository
+	 */
 	public void setFileSystemRepository(FileSystemRepository fileSystemRepository) {
 		
 		Utility.LOG.trace("MediaService.setFileSystemRepository called");
@@ -115,6 +152,13 @@ public class MediaService extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Deserialize a MediaEntity from a JSON String.
+	 * @param json - the JSON String containing the MediaEntity
+	 * @return The MediaEntity from the JSON String.
+	 * @throws JsonMappingException when the JSON String could not be deserialized.
+	 * @throws JsonProcessingException when the JSON String could not be deserialized.
+	 */
 	public MediaEntity getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
 		
 		Utility.LOG.trace("MediaService.getEntityFromJSON called");

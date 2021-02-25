@@ -15,10 +15,6 @@ import ch.qos.logback.classic.Logger;
 import kueres.event.EventEntity;
 import kueres.eventbus.EventSubscriber;
 
-/*
- * ToDo: update receive message to json string
- */
-
 /**
  * 
  * Provides utility functions like logging.
@@ -32,6 +28,9 @@ import kueres.eventbus.EventSubscriber;
 @Service
 public class Utility extends EventSubscriber {
 
+	/**
+	 * Global log instance.
+	 */
 	public static final Logger LOG = (Logger) LoggerFactory.getLogger("logger");
 	
 	private final Logger eventLog = (Logger) LoggerFactory.getLogger("event");
@@ -39,6 +38,9 @@ public class Utility extends EventSubscriber {
 	private ReceiveMessageExecutor receiveMessageExecutor = 
 			(EventEntity event) -> defaultReceiveMessageExecutor(event);
 
+	/**
+	 * The Utility service needs to receive events to log them.
+	 */
 	@Override
 	@PostConstruct
 	public void init() {
@@ -49,6 +51,12 @@ public class Utility extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Receive events.
+	 * @param eventJSON - the received event as a JSON string
+	 * @throws JsonMappingException when the JSON string could not be deserialized.
+	 * @throws JsonProcessingException when the JSON string could not be deserialized.
+	 */
 	@RabbitListener(queues = "eventLogger")
 	public void receiveMessage(@Payload String eventJSON) throws JsonMappingException, JsonProcessingException {
 		
@@ -59,6 +67,10 @@ public class Utility extends EventSubscriber {
 		
 	}
 	
+	/**
+	 * Provide a custom implementation of the ReceiveMessageExecutor to customize how events are logged.
+	 * @param receiveMessageExecutor - the custom implementation
+	 */
 	public void setReceiveMessageExecutor(ReceiveMessageExecutor receiveMessageExecutor) {
 		
 		this.receiveMessageExecutor = receiveMessageExecutor;

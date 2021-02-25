@@ -101,12 +101,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	public E create(E entity) {
 		
 		Utility.LOG.trace("BaseService.create called.");
-		
-//		if (entity.getId() != -1) {
-//			Utility.LOG.info(identifier);
-//			throw new 
-//		}
-//		
+			
 		E savedEntity = repository.save(entity);
 		
 		EventConsumer.sendEvent("BaseService.create", EventType.CREATE.type, this.getIdentifier(), EventConsumer.writeObjectAsJSON(savedEntity));

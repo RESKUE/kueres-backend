@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geojson.Point;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,16 +25,30 @@ import de.fraunhofer.iosb.ilt.sta.model.ext.EntityList;
 import de.fraunhofer.iosb.ilt.sta.service.SensorThingsService;
 import kueres.utility.Utility;
 
-/*
- * ToDo: make urls config properties
+/**
+ * 
+ * The default implementation of the location service.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 24, 2021
+ *
  */
 
 @Service
 public class DefaultLocationService implements LocationService {
 	
-	private String nominatimUrl = "https://nominatim.openstreetmap.org";
+	/**
+	 * The URL to a Nominatim server used for address/coordinate conversion.
+	 */
+	@Value("${kueres.nominatim-url}")
+	private String nominatimUrl;
 
-	private String frostUrl = "http://localhost:5438/FROST-Server/v1.0/";
+	/**
+	 * The URL to the FROST service used for all functions related to points of interest.
+	 */
+	@Value("${kueres.frost-url}")
+	private String frostUrl;
 	
 	private int polygonSteps = 8;
 	private double radiusEarth = 6371000;

@@ -1,11 +1,36 @@
 package kueres.query;
 
+/**
+ * 
+ * The class representation of a search criteria.
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 public class SearchCriteria {
 
+	/**
+	 * The name of the entities field used for the search operation.
+	 */
 	private String key;
+	
+	/**
+	 * The value used by the search operation.
+	 */
 	private Object value;
+	
+	/**
+	 * The search operation.
+	 */
 	private SearchOperation operation;
 	
+	/**
+	 * Construct a search criterium from a filter query parameter.
+	 * @param filter - the query parameter
+	 */
 	public SearchCriteria(String filter) {
 		
 		String[] keyAndValue = filter.split(SearchOperation.getOperationSetRegex());
@@ -22,6 +47,12 @@ public class SearchCriteria {
 		
 	}
 	
+	/**
+	 * Construct a search criterium.
+	 * @param key - the search criteriums key
+	 * @param value - the search criteriums value
+	 * @param operation - the search criteriums operation
+	 */
 	public SearchCriteria(String key, Object value, SearchOperation operation) {
 		
 		this.key = key;

@@ -24,15 +24,37 @@ import kueres.base.BaseController;
 import kueres.base.BaseEntity;
 import kueres.utility.Utility;
 
+/**
+ * 
+ * The MediaController provides all API functions related to media.
+ * These functions are:
+ * - uploading media
+ * - downloading media
+ * - deleting media
+ *
+ * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
+ * @version 1.0
+ * @since Feb 25, 2021
+ *
+ */
+
 @RestController
 @RequestMapping(BaseController.API_ENDPOINT + MediaController.ROUTE)
 public class MediaController {
 
+	/**
+	 * The API route for media.
+	 */
 	public static final String ROUTE = "/media";
 	
 	@Autowired
 	private MediaService service;
 	
+	/**
+	 * Upload a file.
+	 * @param file - the file to be uploaded
+	 * @return The identifier of the uploaded file.
+	 */
 	@PostMapping()
 	@RolesAllowed({"administrator", "helper"})
     public ResponseEntity<Long> upload(@Valid @RequestBody MultipartFile file) {
@@ -48,6 +70,11 @@ public class MediaController {
 		
     }
 	
+	/**
+	 * Download a file by its identifier.
+	 * @param id - the files identifier
+	 * @return The file specified by the identifier.
+	 */
 	@GetMapping(value = "/{" + MediaEntity.ID + "}", produces = MediaType.ALL_VALUE)
 	@RolesAllowed({"administrator", "helper"})
 	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) long id) {
@@ -64,6 +91,11 @@ public class MediaController {
 	    
 	}
 	
+	/**
+	 * Delete a file by its identifier.
+	 * @param id - the files identifier
+	 * @return If the file was successfully deleted.
+	 */
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
