@@ -126,7 +126,7 @@ public class DefaultLocationService implements LocationService {
 			return "";
 		}
 
-		String queryUrl = this.nominatimUrl + "/reverse?lat=" + coordinates[0] + "&lon=" + coordinates[1]
+		String queryUrl = this.nominatimUrl + "/reverse?lon=" + coordinates[0] + "&lat=" + coordinates[1]
 				+ "&format=json";
 
 		try {
