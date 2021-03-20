@@ -46,7 +46,7 @@ public class EventService extends BaseService<EventEntity, EventRepository> {
 	@RabbitListener(queues = EventController.ROUTE)
 	public void receiveMessage(@Payload String eventJSON) throws JsonMappingException, JsonProcessingException {
 		
-		EventEntity event = getEntityFromJSON(eventJSON);
+		EventEntity event = new EventEntity().getEntityFromJSON(eventJSON);
 		this.repository.save(event);
 		
 	}

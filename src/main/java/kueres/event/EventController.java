@@ -1,14 +1,18 @@
 package kueres.event;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.stream.Collectors;
+
 import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,9 +54,12 @@ public class EventController extends BaseController<EventEntity, EventRepository
 	@Override
 	@PostMapping()
 	@RolesAllowed("administrator")
-	public ResponseEntity<EventEntity> create(@Valid @RequestBody EventEntity event) {
+	public ResponseEntity<EventEntity> create(HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 		
 		Utility.LOG.trace("EventController.create called");
+		
+		String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));		
+		EventEntity event = EventEntity.createEntityFromJSON(body, new EventEntity().getUpdateableFields(), EventEntity.class);
 		
 		EventConsumer.sendEvent(event);
 		
@@ -66,7 +73,10 @@ public class EventController extends BaseController<EventEntity, EventRepository
 	@Override
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public ResponseEntity<EventEntity> update(@PathVariable(value = BaseEntity.ID) long id, @Valid @RequestBody EventEntity details) {
+	public ResponseEntity<EventEntity> update(
+			@PathVariable(value = BaseEntity.ID) long id,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		Utility.LOG.error("EventEntities can not be updated");
 		throw new UnsupportedOperationException("EventEntities can not be updated!");

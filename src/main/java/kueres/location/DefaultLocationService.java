@@ -193,8 +193,6 @@ public class DefaultLocationService implements LocationService {
 			poi.setDescription(name);
 			poi.getLocations().add(poiLocation);
 			sts.things().create(poi);
-			
-			Utility.LOG.info("id: {}", poi.getId());
 			return poi.getId().getJson();
 
 		} catch (MalformedURLException e) {
@@ -254,7 +252,6 @@ public class DefaultLocationService implements LocationService {
 			
 			List<String> ids = new ArrayList<String>();
 			for (Location poi : pois) {
-				Utility.LOG.info("found: ({},{}) at {}", poi.getId(), poi.getName(), poi.getLocation());
 				ids.add(poi.getId().getJson());
 			}
 

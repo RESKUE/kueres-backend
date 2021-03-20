@@ -28,7 +28,7 @@ public class ErrorController {
 	 * @return The masked error output.
 	 * @throws ResponseStatusException when the exception could not be read.
 	 */
-	@ExceptionHandler
+	@ExceptionHandler(Exception.class)
     public ResponseEntity<String> error(Exception e) throws ResponseStatusException {
 		
 		String statusCode = "400";

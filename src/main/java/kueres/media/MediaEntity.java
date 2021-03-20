@@ -3,7 +3,9 @@ package kueres.media;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import kueres.base.BaseEntity;
 import kueres.utility.Utility;
@@ -21,7 +23,19 @@ import kueres.utility.Utility;
  *
  */
 @Entity
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id",
+		scope = MediaEntity.class)
 public class MediaEntity extends BaseEntity<MediaEntity> {
+	
+	@Override
+	public String[] getUpdateableFields() {
+		return new String[] {
+			MediaEntity.MIME_TYPE,
+			MediaEntity.ALT_TEXT
+		};
+	}
 	
 	/**
 	 * The path of the file.
@@ -52,7 +66,7 @@ public class MediaEntity extends BaseEntity<MediaEntity> {
 	public void setAltText(String altText) { this.altText = altText; }
 	
 	@Override
-	public void applyPatch(MediaEntity details) {
+	public void applyPatch(String json) {
 		
 		Utility.LOG.error("MediaEntities can not be updated");
 		throw new UnsupportedOperationException("MediaEntities can not be updated!");

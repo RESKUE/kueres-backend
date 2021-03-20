@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import kueres.base.BaseEntity;
 import kueres.utility.Utility;
 
@@ -19,7 +22,21 @@ import kueres.utility.Utility;
  */
 
 @Entity
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id",
+		scope = EventEntity.class)
 public class EventEntity extends BaseEntity<EventEntity> {
+	
+	@Override
+	public String[] getUpdateableFields() {
+		return new String[] {
+			EventEntity.MESSAGE,
+			EventEntity.TYPE,
+			EventEntity.SENDER,
+			EventEntity.ENTITY_JSON
+		};
+	}
 	
 	/**
 	 * The events message.
@@ -60,14 +77,14 @@ public class EventEntity extends BaseEntity<EventEntity> {
 	/**
 	 * A timestamp when the event was send.
 	 */
-	@Column(name = "sendAt", nullable = false)
-	private Date sendAt = new Date();
-	public static final String SEND_AT = "sendAt";
-	public Date getSendAt() { return this.sendAt; }
-	public void setSendAt(Date sendAt) { this.sendAt = sendAt; }
+	@Column(name = "sentAt", nullable = false)
+	private Date sentAt = new Date();
+	public static final String SENT_AT = "sentAt";
+	public Date getSentAt() { return this.sentAt; }
+	public void setSentAt(Date sentAt) { this.sentAt = sentAt; }
 	
 	@Override
-	public void applyPatch(EventEntity details) {
+	public void applyPatch(String json) {
 		
 		Utility.LOG.error("EventEntities can not be updated");
 		throw new UnsupportedOperationException("EventEntities can not be updated!");

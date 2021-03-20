@@ -1,11 +1,15 @@
 package kueres.base;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kueres.query.EntitySpecification;
@@ -103,15 +106,28 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	 * Create an entity of the controllers BaseEntity-type.
 	 * @param entity - the entity that should be created. This entity can not have an identifier.
 	 * @return The created entity. This contains the entity's identifier.
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws IOException 
 	 */
 	@PostMapping()
 	@RolesAllowed("administrator")
-	public ResponseEntity<E> create(@Valid @RequestBody E entity) {
+	public ResponseEntity<E> create(HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 		
 		Utility.LOG.trace("BaseController.create called.");
 		
-		E createdEntity = service.create(entity);
-		return ResponseEntity.ok().body(createdEntity);
+		String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+		
+		Class<E> entityClass = this.service.getEntityClass();
+		E entity = entityClass.getDeclaredConstructor().newInstance();
+		entity = BaseEntity.createEntityFromJSON(body, entity.getUpdateableFields(), entityClass);
+		
+		E created = this.service.create(entity);
+		return ResponseEntity.ok().body(created);
 		
 	}
 	
@@ -121,15 +137,27 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	 * @param id - the identifier of the entity that should be updated.
 	 * @param details - the updated data.
 	 * @return The updated entity.
+	 * @throws IOException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public ResponseEntity<E> update(@PathVariable(value = BaseEntity.ID) long id, @Valid @RequestBody E details) {
+	public ResponseEntity<E> update(
+			@PathVariable(value = BaseEntity.ID) long id,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		Utility.LOG.trace("BaseController.update called.");
 		
-		E updatedEntity = service.update(id, details);
-		return ResponseEntity.ok().body(updatedEntity);
+		String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+		
+		E updated = this.service.update(id, body);
+		return ResponseEntity.ok().body(updated);
 		
 	}
 	

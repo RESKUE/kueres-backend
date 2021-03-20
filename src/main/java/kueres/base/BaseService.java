@@ -1,5 +1,6 @@
 package kueres.base;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kueres.event.EventType;
 import kueres.eventbus.EventConsumer;
@@ -37,24 +37,6 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 */
 	@Autowired
 	protected R repository;
-	
-	/**
-	 * Deserialize the services' BaseEntity from a JSON string.
-	 * @param json - the JSON string
-	 * @return The deserialized entity.
-	 * @throws JsonMappingException when the entity could not be deserialized.
-	 * @throws JsonProcessingException when the entity could not be deserialized.
-	 */
-	@SuppressWarnings("unchecked")
-	public E getEntityFromJSON(String json) throws JsonMappingException, JsonProcessingException  {
-		
-		Utility.LOG.trace("BaseService.getEntityFromJSON called.");
-		
-		return new ObjectMapper().readValue(
-				json, 
-				(Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
-		
-	}
 	
 	/**
 	 * Find all entities of the services' BaseEntity-type.
@@ -116,14 +98,22 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 * @param id - the identifier of the entity that should be updated.
 	 * @param details - the updated data.
 	 * @return The updated entity.
+	 * @throws JsonProcessingException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws JsonMappingException 
 	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
 	 */
-	public E update(long id, E details) {
+	public E update(long id, String detailsJSON) throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException {
 		
 		Utility.LOG.trace("BaseService.update called.");
 		
 		E entity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		entity.applyPatch(details);
+		entity.applyPatch(detailsJSON);
 		final E updatedEntity = repository.save(entity);
 		
 		EventConsumer.sendEvent("BaseService.update", EventType.UPDATE.type, this.getIdentifier(), EventConsumer.writeObjectAsJSON(updatedEntity));
@@ -149,6 +139,11 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 		return entity;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Class<E> getEntityClass() {
+		return (Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
 }
