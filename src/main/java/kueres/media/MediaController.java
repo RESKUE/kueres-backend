@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,13 +54,19 @@ public class MediaController {
 	 * @param file - the file to be uploaded
 	 * @return The identifier of the uploaded file.
 	 */
-	@PostMapping()
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@RolesAllowed({"administrator", "helper"})
-    public ResponseEntity<Long> upload(@Valid @RequestBody MultipartFile file) {
+    public ResponseEntity<Long> upload(
+    		//@Valid @RequestBody MultipartFile file
+    		@RequestPart MultipartFile file,
+    		@RequestPart String altText
+    		) {
 		
 		Utility.LOG.trace("MediaController.upload called");
 		
-		MediaEntity media = service.save(file);
+		Utility.LOG.info("altText: {}", altText);
+		
+		MediaEntity media = service.save(file, altText);
 		if (media != null) {
 			return ResponseEntity.ok().body(media.getId());
 		} else {

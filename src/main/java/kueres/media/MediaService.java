@@ -56,14 +56,14 @@ public class MediaService extends EventSubscriber {
 	 * @param multipartFile - the file to be saved
 	 * @return The MediaEntity corresponding to the file.
 	 */
-	public MediaEntity save(MultipartFile multipartFile) {
+	public MediaEntity save(MultipartFile multipartFile, String altText) {
 		
 		Utility.LOG.trace("MediaService.save called");
 		
 		MediaEntity media = new MediaEntity();
 		media.setLocation("UPLOADING");
 		media.setMimeType(multipartFile.getContentType());
-		media.setAltText(multipartFile.getOriginalFilename());
+		media.setAltText(altText);
 		media = mediaRepository.save(media);
 		
 		try {
