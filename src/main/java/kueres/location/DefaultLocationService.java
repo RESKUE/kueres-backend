@@ -86,7 +86,7 @@ public class DefaultLocationService implements LocationService {
 			connection.disconnect();
 
 			String response = content.toString();
-
+			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode array = mapper.readTree(response);
 			if (array.isArray() && array.size() > 0) {
@@ -94,11 +94,11 @@ public class DefaultLocationService implements LocationService {
 
 				if (firstResult.has("lat") && firstResult.has("lon")) {
 
-					JsonNode lat = firstResult.get("lat");
 					JsonNode lon = firstResult.get("lon");
+					JsonNode lat = firstResult.get("lat");
 					double[] coordinates = new double[2];
-					coordinates[0] = Double.parseDouble(lat.asText());
-					coordinates[1] = Double.parseDouble(lon.asText());
+					coordinates[0] = Double.parseDouble(lon.asText());
+					coordinates[1] = Double.parseDouble(lat.asText());
 					return coordinates;
 
 				}
@@ -128,7 +128,7 @@ public class DefaultLocationService implements LocationService {
 
 		String queryUrl = this.nominatimUrl + "/reverse?lon=" + coordinates[0] + "&lat=" + coordinates[1]
 				+ "&format=json";
-
+		
 		try {
 
 			URL url = new URL(queryUrl);
@@ -155,7 +155,7 @@ public class DefaultLocationService implements LocationService {
 			connection.disconnect();
 
 			String response = content.toString();
-
+			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree(response);
 			if (node.has("display_name")) {

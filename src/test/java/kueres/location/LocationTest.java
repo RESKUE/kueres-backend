@@ -33,7 +33,7 @@ public class LocationTest {
 	public void addressCoordinatesConversion() {
 		
 		String addressWhitehouse = "White House, 1600, Pennsylvania Avenue Northwest, Washington, District of Columbia, 20500, United States";
-		double[] coordinatesWhitehouse = new double[] {38.897699700000004,-77.03655315};
+		double[] coordinatesWhitehouse = new double[] {-77.03655315, 38.897699700000004};
 		
 		String convertedAddress = this.service.coordinatesToAddress(coordinatesWhitehouse);
 		double[] convertedCoordinates = this.service.addressToCoordinates(addressWhitehouse);

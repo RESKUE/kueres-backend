@@ -2,6 +2,7 @@ package kueres.media;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -57,16 +58,20 @@ public class MediaController {
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@RolesAllowed({"administrator", "helper"})
     public ResponseEntity<Long> upload(
-    		//@Valid @RequestBody MultipartFile file
     		@RequestPart MultipartFile file,
-    		@RequestPart String altText
+    		@RequestPart Optional<String> altText
     		) {
 		
 		Utility.LOG.trace("MediaController.upload called");
 		
 		Utility.LOG.info("altText: {}", altText);
 		
-		MediaEntity media = service.save(file, altText);
+		String altTextString = file.getOriginalFilename();
+		if (altText.isPresent()) {
+			altTextString = altText.get();
+		}
+		
+		MediaEntity media = service.save(file, altTextString);
 		if (media != null) {
 			return ResponseEntity.ok().body(media.getId());
 		} else {
