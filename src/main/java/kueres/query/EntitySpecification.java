@@ -1,7 +1,10 @@
 package kueres.query;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,8 +12,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import kueres.base.BaseEntity;
+import kueres.utility.Utility;
 
 /**
  * 
@@ -61,6 +67,119 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 		
 	}
 	
+	/**
+	 * Get a java.util.function.Predicate from an EntitySpecification.
+	 * This can be used to filter lists.
+	 * @param <T> - the type of entity
+	 * @param clazz - the class of the entity
+	 * @return a java.util.function.Predicate representing an EntitySpecification.
+	 */
+	public <T extends BaseEntity<T>> java.util.function.Predicate<T> toPredicate(Class<T> clazz) {
+		
+		return entity -> {
+			AtomicReference<Boolean> resultAggregate = new AtomicReference<Boolean>();
+			resultAggregate.set(true);
+			this.params.forEach((SearchCriteria param) -> {
+				
+				String field = param.getKey();
+				PropertyDescriptor descriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(clazz, field);
+				try {
+					
+					Class<?> fieldClass = descriptor.getPropertyType();
+					Object fieldValue = descriptor.getReadMethod().invoke(entity);
+					fieldClass.cast(fieldValue);
+					fieldClass.cast(param.getValue());
+					
+					boolean result = true;
+					switch (param.getOperation()) {
+					case GREATER_THAN:
+						if (Integer.class.isAssignableFrom(fieldClass)) {
+							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
+							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger > paramValueInteger;
+						} else if (Double.class.isAssignableFrom(fieldClass)) {
+							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
+							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble > paramValueDouble;
+						} else {
+							Utility.LOG.info("bad filter");
+							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+						}
+						break;
+					case LESS_THAN:
+						if (Integer.class.isAssignableFrom(fieldClass)) {
+							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
+							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger < paramValueInteger;
+						} else if (Double.class.isAssignableFrom(fieldClass)) {
+							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
+							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble > paramValueDouble;
+						} else {
+							Utility.LOG.info("bad filter");
+							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+						}
+						break;
+					case NOT_EQUAL:
+						if (Integer.class.isAssignableFrom(fieldClass)) {
+							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
+							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger != paramValueInteger;
+						} else if (Double.class.isAssignableFrom(fieldClass)) {
+							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
+							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble > paramValueDouble;
+						} else if (String.class.isAssignableFrom(fieldClass)) {
+							String fieldValueString = (String) fieldClass.cast(fieldValue);
+							String paramValueString = (String) fieldClass.cast(param.getValue());
+							result = fieldValueString != paramValueString;
+						} else {
+							Utility.LOG.info("bad filter");
+							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+						}
+						break;
+					case EQUAL:
+						if (Integer.class.isAssignableFrom(fieldClass)) {
+							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
+							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger != paramValueInteger;
+						} else if (Double.class.isAssignableFrom(fieldClass)) {
+							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
+							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble > paramValueDouble;
+						} else if (String.class.isAssignableFrom(fieldClass)) {
+							String fieldValueString = (String) fieldClass.cast(fieldValue);
+							String paramValueString = (String) fieldClass.cast(param.getValue());
+							result = fieldValueString == paramValueString;
+						} else {
+							Utility.LOG.info("bad filter");
+							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+						}
+						break;
+					case MATCH:
+						if (String.class.isAssignableFrom(fieldClass)) {
+							String fieldValueString = (String) fieldClass.cast(fieldValue);
+							String paramValueString = (String) fieldClass.cast(param.getValue());
+							result = fieldValueString.contains(paramValueString);
+						} else {
+							Utility.LOG.info("bad filter");
+							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+						}
+						break;
+					}
+					resultAggregate.set(resultAggregate.get() && result);
+					
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					Utility.LOG.info("bad filter");
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+				}
+				
+			});
+			return resultAggregate.get();
+		};
+		
+	}
+	
 	@Override
 	public Predicate toPredicate(Root<E> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 		
@@ -81,12 +200,6 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 				break;
 			case MATCH:
 				predicates[i] = criteriaBuilder.like(root.get(this.params.get(i).getKey()), "%" + this.params.get(i).getValue().toString() + "%");
-				break;
-			case IN:
-				predicates[i] = criteriaBuilder.isMember(this.params.get(i).getValue(), root.get(this.params.get(i).getKey()));
-				break;
-			case NOT_IN:
-				predicates[i] = criteriaBuilder.isNotMember(this.params.get(i).getValue(), root.get(this.params.get(i).getKey()));
 				break;
 			}
 		}

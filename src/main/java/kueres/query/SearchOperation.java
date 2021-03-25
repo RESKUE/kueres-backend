@@ -39,17 +39,7 @@ public enum SearchOperation {
     /**
      * Search entities where a String field contains some other String.
      */
-    MATCH,
-    
-    /**
-     * Search entities where a Collection field contains some value.
-     */
-    IN,
-    
-    /**
-     * Search entities where a Collection field does not contain some value.
-     */
-    NOT_IN;
+    MATCH;
     
 	/**
 	 * The symbols for each search operation-
@@ -59,9 +49,7 @@ public enum SearchOperation {
     		"<",
     		"!",
     		"=",
-    		"~",
-    		"§",
-    		"%"};
+    		"~"};
     
     public static String getOperationSetRegex() {
     	
@@ -76,8 +64,6 @@ public enum SearchOperation {
      * NOT_EQUAL: !
      * EQUAL: =
      * MATCH: ~
-     * IN: §
-     * NOT_IN: %
      * @param operation - the symbol that should be mapped
      * @return The search operation for the symbol.
      */
@@ -89,8 +75,6 @@ public enum SearchOperation {
 			case '!': return NOT_EQUAL;
 			case '=': return EQUAL;
 			case '~': return MATCH;
-			case '§': return IN;
-			case '%': return NOT_IN;
 			default: return null;
 		}
 		
