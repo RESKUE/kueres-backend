@@ -7,6 +7,8 @@ src/test/resources/services/rabbitmq/logs
 
 builds/*
 
+node_modules
+
 ### Eclipse ###
 .metadata
 bin/

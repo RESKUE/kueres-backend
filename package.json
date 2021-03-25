@@ -1,0 +1,23 @@
+{
+  "name": "kueres-backend",
+  "version": "0.0.1-SNAPSHOT",
+  "description": "The KUERES backend framework for the RESKUE project\"",
+  "scripts": {
+    "docs": "npm run docs:generate && npm run docs:export",
+    "docs:generate": "mvn javadoc:javadoc",
+    "docs:export": "rm -rf docs && cp -r target/site/apidocs/ docs/"
+  },
+  "pre-push": [
+    "docs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab-ext.iosb.fraunhofer.de/ilt-pse/ws20_21-mobile-anwendung-zur-unterst-tzung-im-kulturg-terschutz/kueres-backend.git"
+  },
+  "author": "Tim Engbrocks",
+  "license": "MIT",
+  "dependencies": {
+    "maven": "^5.0.0",
+    "pre-push": "^0.1.1"
+  }
+}
