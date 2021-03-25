@@ -104,15 +104,16 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	
 	/**
 	 * Create an entity of the controllers BaseEntity-type.
-	 * @param entity - the entity that should be created. This entity can not have an identifier.
+	 * @param request - the HTTP request received by the servlet
+	 * @param response - the HTTP response object for the servlet
 	 * @return The created entity. This contains the entity's identifier.
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws IOException 
+	 * @throws SecurityException if the JSON string can not be processed
+	 * @throws NoSuchMethodException if the JSON string can not be processed
+	 * @throws InvocationTargetException if the JSON string can not be processed
+	 * @throws IllegalArgumentException if the JSON string can not be processed
+	 * @throws IllegalAccessException if the JSON string can not be processed
+	 * @throws InstantiationException if the JSON string can not be processed
+	 * @throws IOException if the JSON string can not be processed
 	 */
 	@PostMapping()
 	@RolesAllowed("administrator")
@@ -135,15 +136,16 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	 * Update an entity of the controllers BaseEntity-type by its identifier.
 	 * Fields that are not populated in the updated data will not be changed.
 	 * @param id - the identifier of the entity that should be updated.
-	 * @param details - the updated data.
+	 * @param request - the HTTP request received by the servlet
+	 * @param response - the HTTP response object for the servlet
 	 * @return The updated entity.
-	 * @throws IOException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws IOException if the JSON string can not be processed
+	 * @throws SecurityException if the JSON string can not be processed
+	 * @throws NoSuchMethodException if the JSON string can not be processed
+	 * @throws InvocationTargetException if the JSON string can not be processed
+	 * @throws IllegalArgumentException if the JSON string can not be processed
+	 * @throws IllegalAccessException if the JSON string can not be processed
+	 * @throws InstantiationException if the JSON string can not be processed
 	 */
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")

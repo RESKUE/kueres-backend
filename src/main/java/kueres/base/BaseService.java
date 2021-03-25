@@ -96,16 +96,16 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 * Update an entity of the services' BaseEntity-type by its identifier.
 	 * Fields that are not populated in the updated data will not be changed.
 	 * @param id - the identifier of the entity that should be updated.
-	 * @param details - the updated data.
+	 * @param detailsJSON - the updated data in JSON format.
 	 * @return The updated entity.
-	 * @throws JsonProcessingException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws JsonMappingException 
+	 * @throws JsonProcessingException if the JSON string can not be processed
+	 * @throws SecurityException if the JSON string can not be processed
+	 * @throws NoSuchMethodException if the JSON string can not be processed
+	 * @throws InvocationTargetException if the JSON string can not be processed
+	 * @throws IllegalArgumentException if the JSON string can not be processed
+	 * @throws IllegalAccessException if the JSON string can not be processed
+	 * @throws InstantiationException if the JSON string can not be processed
+	 * @throws JsonMappingException if the JSON string can not be processed
 	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
 	 */
 	public E update(long id, String detailsJSON) throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException {

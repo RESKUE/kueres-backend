@@ -72,6 +72,19 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 	 * Fields that are not populated in the updated data will not be changed.
 	 * @param details - the updated data.
 	 */
+	/**
+	 * Update the fields of instance of this class.
+	 * Fields that are not populated in the updated data will not be changed.
+	 * @param json - the updated data in JSON format.
+	 * @throws JsonMappingException if the JSON string can not be processed
+	 * @throws InstantiationException if the JSON string can not be processed
+	 * @throws IllegalAccessException if the JSON string can not be processed
+	 * @throws IllegalArgumentException if the JSON string can not be processed
+	 * @throws InvocationTargetException if the JSON string can not be processed
+	 * @throws NoSuchMethodException if the JSON string can not be processed
+	 * @throws SecurityException if the JSON string can not be processed
+	 * @throws JsonProcessingException if the JSON string can not be processed
+	 */
 	public abstract void applyPatch(String json) throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException;
 	
 	/**

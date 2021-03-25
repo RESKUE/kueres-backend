@@ -53,6 +53,7 @@ public class MediaController {
 	/**
 	 * Upload a file.
 	 * @param file - the file to be uploaded
+	 * @param altText - the optional altText for the uploaded file
 	 * @return The identifier of the uploaded file.
 	 */
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

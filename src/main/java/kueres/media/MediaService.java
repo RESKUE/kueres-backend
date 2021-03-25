@@ -54,6 +54,7 @@ public class MediaService extends EventSubscriber {
 	/**
 	 * Save a file.
 	 * @param multipartFile - the file to be saved
+	 * @param altText - the altText for the file
 	 * @return The MediaEntity corresponding to the file.
 	 */
 	public MediaEntity save(MultipartFile multipartFile, String altText) {
