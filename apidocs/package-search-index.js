@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"kueres"},{"l":"kueres.auth"},{"l":"kueres.base"},{"l":"kueres.error"},{"l":"kueres.event"},{"l":"kueres.eventbus"},{"l":"kueres.location"},{"l":"kueres.media"},{"l":"kueres.query"},{"l":"kueres.utility"}]
