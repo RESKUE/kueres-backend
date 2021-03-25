@@ -22,7 +22,7 @@ public interface FileSystemRepository {
 	 * @param content - the byte content of the file
 	 * @return The path of the file.
 	 */
-	public String save(long id, byte[] content);
+	public String save(Long id, byte[] content);
 	
 	/**
 	 * Find a file by its path.

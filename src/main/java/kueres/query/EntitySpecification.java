@@ -87,9 +87,7 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 					
 					Class<?> fieldClass = descriptor.getPropertyType();
 					Object fieldValue = descriptor.getReadMethod().invoke(entity);
-					fieldClass.cast(fieldValue);
-					fieldClass.cast(param.getValue());
-					
+					Utility.LOG.info("class: {}", fieldClass);
 					boolean result = true;
 					switch (param.getOperation()) {
 					case GREATER_THAN:
@@ -99,8 +97,12 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 							result = fieldValueInteger > paramValueInteger;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							Double paramValueDouble = Double.parseDouble((String) param.getValue());
 							result = fieldValueDouble > paramValueDouble;
+						} else if (Long.class.isAssignableFrom(fieldClass)) {
+							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
+							Long paramValueLong = Long.parseLong((String) param.getValue());
+							result = fieldValueLong > paramValueLong;
 						} else {
 							Utility.LOG.info("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -113,8 +115,12 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 							result = fieldValueInteger < paramValueInteger;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
-							result = fieldValueDouble > paramValueDouble;
+							Double paramValueDouble = Double.parseDouble((String) param.getValue());
+							result = fieldValueDouble < paramValueDouble;
+						} else if (Long.class.isAssignableFrom(fieldClass)) {
+							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
+							Long paramValueLong = Long.parseLong((String) param.getValue());
+							result = fieldValueLong < paramValueLong;
 						} else {
 							Utility.LOG.info("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -127,12 +133,16 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 							result = fieldValueInteger != paramValueInteger;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
-							result = fieldValueDouble > paramValueDouble;
+							Double paramValueDouble = Double.parseDouble((String) param.getValue());
+							result = fieldValueDouble != paramValueDouble;
 						} else if (String.class.isAssignableFrom(fieldClass)) {
 							String fieldValueString = (String) fieldClass.cast(fieldValue);
 							String paramValueString = (String) fieldClass.cast(param.getValue());
 							result = fieldValueString != paramValueString;
+						} else if (Long.class.isAssignableFrom(fieldClass)) {
+							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
+							Long paramValueLong = Long.parseLong((String) param.getValue());
+							result = fieldValueLong != paramValueLong;
 						} else {
 							Utility.LOG.info("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -145,12 +155,16 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 							result = fieldValueInteger != paramValueInteger;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = (Double) fieldClass.cast(param.getValue());
-							result = fieldValueDouble > paramValueDouble;
+							Double paramValueDouble = Double.parseDouble((String) param.getValue());
+							result = fieldValueDouble == paramValueDouble;
 						} else if (String.class.isAssignableFrom(fieldClass)) {
 							String fieldValueString = (String) fieldClass.cast(fieldValue);
 							String paramValueString = (String) fieldClass.cast(param.getValue());
 							result = fieldValueString == paramValueString;
+						} else if (Long.class.isAssignableFrom(fieldClass)) {
+							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
+							Long paramValueLong = Long.parseLong((String) param.getValue());
+							result = fieldValueLong == paramValueLong;
 						} else {
 							Utility.LOG.info("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

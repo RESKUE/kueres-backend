@@ -74,7 +74,7 @@ public class EventController extends BaseController<EventEntity, EventRepository
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public ResponseEntity<EventEntity> update(
-			@PathVariable(value = BaseEntity.ID) long id,
+			@PathVariable(value = BaseEntity.ID) Long id,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		

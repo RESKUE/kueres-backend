@@ -88,7 +88,7 @@ public class MediaController {
 	 */
 	@GetMapping(value = "/{" + MediaEntity.ID + "}", produces = MediaType.ALL_VALUE)
 	@RolesAllowed({"administrator", "helper"})
-	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) long id) {
+	public ResponseEntity<FileSystemResource> download(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		Utility.LOG.trace("MediaController.download called");
 		
@@ -109,7 +109,7 @@ public class MediaController {
 	 */
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
+	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		Utility.LOG.trace("MediaController.delete called");
 		

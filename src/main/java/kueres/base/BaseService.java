@@ -63,7 +63,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 * @return The entity with the given identifier.
 	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
 	 */
-	public E findById(long id) {
+	public E findById(Long id) {
 		
 		Utility.LOG.trace("BaseService.findById called.");
 		
@@ -108,7 +108,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 * @throws JsonMappingException if the JSON string can not be processed
 	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
 	 */
-	public E update(long id, String detailsJSON) throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException {
+	public E update(Long id, String detailsJSON) throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException {
 		
 		Utility.LOG.trace("BaseService.update called.");
 		
@@ -128,7 +128,7 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 	 * @return The entity that was deleted.
 	 * @throws ResourceNotFoundException if there is no entity with the specified identifier.
 	 */
-	public E delete(long id) {
+	public E delete(Long id) {
 		
 		Utility.LOG.trace("BaseService.delete called.");
 		

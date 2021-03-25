@@ -93,7 +93,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	 */
 	@GetMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed({"administrator", "helper"})
-	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) long id) {
+	public ResponseEntity<E> findById(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		Utility.LOG.trace("BaseController.findById called.");
 		
@@ -150,7 +150,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	@PutMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
 	public ResponseEntity<E> update(
-			@PathVariable(value = BaseEntity.ID) long id,
+			@PathVariable(value = BaseEntity.ID) Long id,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
@@ -170,7 +170,7 @@ public abstract class BaseController<E extends BaseEntity<E>, R extends BaseRepo
 	 */
 	@DeleteMapping("/{" + BaseEntity.ID + "}")
 	@RolesAllowed("administrator")
-	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) long id) {
+	public Map<String, Boolean> delete(@PathVariable(value = BaseEntity.ID) Long id) {
 		
 		Utility.LOG.trace("BaseController.delete called.");
 		

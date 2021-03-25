@@ -35,7 +35,7 @@ public class DefaultFileSystemRepository implements FileSystemRepository {
 	private String MEDIA_DIR;
 	
 	@Override
-	public String save(long id, byte[] content) {
+	public String save(Long id, byte[] content) {
 		
 		Utility.LOG.trace("DefaultFileSystemRepository.save called");
 		

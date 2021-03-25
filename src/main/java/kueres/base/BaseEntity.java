@@ -60,12 +60,12 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id = -1;
+	private Long id = -1L;
 	/**
 	 * The path mapping for this field.
 	 */
 	public static final String ID = "id";
-	public long getId() { return this.id; }
+	public Long getId() { return this.id; }
 	
 	/**
 	 * Update the fields of instance of this class.

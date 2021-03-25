@@ -92,7 +92,7 @@ public class MediaService extends EventSubscriber {
 	 * @param id - the files identifier
 	 * @return The file specified by the identifier.
 	 */
-	public FileSystemResource getFileById(long id) {
+	public FileSystemResource getFileById(Long id) {
 		
 		Utility.LOG.trace("MediaService.getFileById called");
 		
@@ -107,7 +107,7 @@ public class MediaService extends EventSubscriber {
 	 * @param id - the MediaEntitys identifier
 	 * @return The MediaEntity specified by the identifier.
 	 */
-	public MediaEntity findById(long id) {
+	public MediaEntity findById(Long id) {
 		
 		Utility.LOG.trace("MediaService.findById called");
 		
@@ -124,7 +124,7 @@ public class MediaService extends EventSubscriber {
 	 * @param id - the files/MediaEntitys identifier
 	 * @return If the file and MediaEntity were successfully deleted.
 	 */
-	public boolean delete(long id) {
+	public boolean delete(Long id) {
 		
 		Utility.LOG.trace("MediaService.delete called");
 		
