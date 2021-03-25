@@ -87,86 +87,109 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 					
 					Class<?> fieldClass = descriptor.getPropertyType();
 					Object fieldValue = descriptor.getReadMethod().invoke(entity);
-					Utility.LOG.info("class: {}", fieldClass);
 					boolean result = true;
 					switch (param.getOperation()) {
 					case GREATER_THAN:
 						if (Integer.class.isAssignableFrom(fieldClass)) {
 							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
-							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
-							result = fieldValueInteger > paramValueInteger;
+							Integer paramValueInteger;
+							if (param.getValue() instanceof String) paramValueInteger = Integer.parseInt((String) param.getValue());
+							else paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger.compareTo(paramValueInteger) > 0;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = Double.parseDouble((String) param.getValue());
-							result = fieldValueDouble > paramValueDouble;
+							Double paramValueDouble;
+							if (param.getValue() instanceof String) paramValueDouble = Double.parseDouble((String) param.getValue());
+							else paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble.compareTo(paramValueDouble) > 0;
 						} else if (Long.class.isAssignableFrom(fieldClass)) {
 							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
-							Long paramValueLong = Long.parseLong((String) param.getValue());
-							result = fieldValueLong > paramValueLong;
+							Long paramValueLong;
+							if (param.getValue() instanceof String) paramValueLong = Long.parseLong((String) param.getValue());
+							else paramValueLong = (Long) fieldClass.cast(param.getValue());
+							result = fieldValueLong.compareTo(paramValueLong) > 0;
 						} else {
-							Utility.LOG.info("bad filter");
+							Utility.LOG.error("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 						}
 						break;
 					case LESS_THAN:
 						if (Integer.class.isAssignableFrom(fieldClass)) {
 							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
-							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
-							result = fieldValueInteger < paramValueInteger;
+							Integer paramValueInteger;
+							if (param.getValue() instanceof String) paramValueInteger = Integer.parseInt((String) param.getValue());
+							else paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger.compareTo(paramValueInteger) < 0;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = Double.parseDouble((String) param.getValue());
-							result = fieldValueDouble < paramValueDouble;
+							Double paramValueDouble;
+							if (param.getValue() instanceof String) paramValueDouble = Double.parseDouble((String) param.getValue());
+							else paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble.compareTo(paramValueDouble) < 0;
 						} else if (Long.class.isAssignableFrom(fieldClass)) {
 							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
-							Long paramValueLong = Long.parseLong((String) param.getValue());
-							result = fieldValueLong < paramValueLong;
+							Long paramValueLong;
+							if (param.getValue() instanceof String) paramValueLong = Long.parseLong((String) param.getValue());
+							else paramValueLong = (Long) fieldClass.cast(param.getValue());
+							result = fieldValueLong.compareTo(paramValueLong) < 0;
 						} else {
-							Utility.LOG.info("bad filter");
+							Utility.LOG.error("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 						}
 						break;
 					case NOT_EQUAL:
 						if (Integer.class.isAssignableFrom(fieldClass)) {
 							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
-							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
-							result = fieldValueInteger != paramValueInteger;
+							Integer paramValueInteger;
+							if (param.getValue() instanceof String) paramValueInteger = Integer.parseInt((String) param.getValue());
+							else paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger.compareTo(paramValueInteger) != 0;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = Double.parseDouble((String) param.getValue());
-							result = fieldValueDouble != paramValueDouble;
+							Double paramValueDouble;
+							if (param.getValue() instanceof String) paramValueDouble = Double.parseDouble((String) param.getValue());
+							else paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble.compareTo(paramValueDouble) != 0;
 						} else if (String.class.isAssignableFrom(fieldClass)) {
 							String fieldValueString = (String) fieldClass.cast(fieldValue);
 							String paramValueString = (String) fieldClass.cast(param.getValue());
-							result = fieldValueString != paramValueString;
+							result = !fieldValueString.equals(paramValueString);
 						} else if (Long.class.isAssignableFrom(fieldClass)) {
 							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
-							Long paramValueLong = Long.parseLong((String) param.getValue());
-							result = fieldValueLong != paramValueLong;
+							Long paramValueLong;
+							if (param.getValue() instanceof String) paramValueLong = Long.parseLong((String) param.getValue());
+							else paramValueLong = (Long) fieldClass.cast(param.getValue());
+							result = fieldValueLong.compareTo(paramValueLong) != 0;
 						} else {
-							Utility.LOG.info("bad filter");
+							Utility.LOG.error("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 						}
 						break;
 					case EQUAL:
 						if (Integer.class.isAssignableFrom(fieldClass)) {
 							Integer fieldValueInteger = (Integer) fieldClass.cast(fieldValue);
-							Integer paramValueInteger = (Integer) fieldClass.cast(param.getValue());
-							result = fieldValueInteger != paramValueInteger;
+							Integer paramValueInteger;
+							if (param.getValue() instanceof String) paramValueInteger = Integer.parseInt((String) param.getValue());
+							else paramValueInteger = (Integer) fieldClass.cast(param.getValue());
+							result = fieldValueInteger.compareTo(paramValueInteger) == 0;
 						} else if (Double.class.isAssignableFrom(fieldClass)) {
 							Double fieldValueDouble = (Double) fieldClass.cast(fieldValue);
-							Double paramValueDouble = Double.parseDouble((String) param.getValue());
-							result = fieldValueDouble == paramValueDouble;
+							Double paramValueDouble;
+							if (param.getValue() instanceof String) paramValueDouble = Double.parseDouble((String) param.getValue());
+							else paramValueDouble = (Double) fieldClass.cast(param.getValue());
+							result = fieldValueDouble.compareTo(paramValueDouble) == 0;
 						} else if (String.class.isAssignableFrom(fieldClass)) {
 							String fieldValueString = (String) fieldClass.cast(fieldValue);
 							String paramValueString = (String) fieldClass.cast(param.getValue());
-							result = fieldValueString == paramValueString;
+							result = fieldValueString.equals(paramValueString);
 						} else if (Long.class.isAssignableFrom(fieldClass)) {
 							Long fieldValueLong = (Long) fieldClass.cast(fieldValue);
-							Long paramValueLong = Long.parseLong((String) param.getValue());
-							result = fieldValueLong == paramValueLong;
+							Long paramValueLong;
+							if (param.getValue() instanceof String) paramValueLong = Long.parseLong((String) param.getValue());
+							else paramValueLong = (Long) fieldClass.cast(param.getValue());
+							result = fieldValueLong.compareTo(paramValueLong) == 0;
 						} else {
-							Utility.LOG.info("bad filter");
+							Utility.LOG.error("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 						}
 						break;
@@ -176,7 +199,7 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 							String paramValueString = (String) fieldClass.cast(param.getValue());
 							result = fieldValueString.contains(paramValueString);
 						} else {
-							Utility.LOG.info("bad filter");
+							Utility.LOG.error("bad filter");
 							throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 						}
 						break;
@@ -184,7 +207,7 @@ public class EntitySpecification<E extends BaseEntity<E>> implements Specificati
 					resultAggregate.set(resultAggregate.get() && result);
 					
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					Utility.LOG.info("bad filter");
+					Utility.LOG.error("bad filter");
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 				}
 				

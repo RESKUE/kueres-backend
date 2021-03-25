@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,7 +69,7 @@ public class MediaTest {
 	@WithMockUser(roles = { "administrator" })
 	public void crud() throws IOException {
 
-		ResponseEntity<Long> responseUpload = this.controller.upload(this.logoMultipart, this.logoMultipart.getOriginalFilename());
+		ResponseEntity<Long> responseUpload = this.controller.upload(this.logoMultipart, Optional.of(this.logoMultipart.getOriginalFilename()));
 		assertThat(responseUpload.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(responseUpload.getBody()).isNotNull();
 
@@ -162,7 +163,7 @@ public class MediaTest {
 		
 		assertThat(testMediaDir.exists()).isFalse();
 		
-		this.repository.save(0, this.logoContent);
+		this.repository.save(0L, this.logoContent);
 		
 		assertThat(testMediaDir.exists()).isTrue();
 		assertThat(testMediaDir.isDirectory()).isTrue();
@@ -193,7 +194,7 @@ public class MediaTest {
 		assertThat((String) ReflectionTestUtils.getField(repository, "MEDIA_DIR")).isEqualTo("");
 		
 		HttpStatus status = assertThrows(ResponseStatusException.class, () -> {
-			this.repository.save(0, this.logoContent);
+			this.repository.save(0L, this.logoContent);
 		}).getStatus();
 		assertThat(status).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
 		

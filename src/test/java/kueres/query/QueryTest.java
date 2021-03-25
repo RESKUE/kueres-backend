@@ -2,10 +2,11 @@ package kueres.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -16,7 +17,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import kueres.KueresTestInitializer;
+import kueres.base.BaseEntity;
 import kueres.event.EventEntity;
 
 @SpringBootTest
@@ -24,6 +29,97 @@ import kueres.event.EventEntity;
 @TestPropertySource(locations="classpath:test.properties")
 @TestInstance(Lifecycle.PER_CLASS)
 public class QueryTest {
+	
+	@Test
+	public void specificationToFunctionPredicate() {
+		
+		Class<EntitySpecificationDataObject> clazz = EntitySpecificationDataObject.class;
+		EntitySpecification<EntitySpecificationDataObject> spec = new EntitySpecification<EntitySpecificationDataObject>();
+		EntitySpecificationDataObject esdoTrue = new EntitySpecificationDataObject(1, 1.0, 1L, "");
+		EntitySpecificationDataObject esdoFalse = new EntitySpecificationDataObject(0, 0.0, 0L, "");
+		//GT - int
+		SearchCriteria gtInteger = new SearchCriteria("integerField", 0, SearchOperation.GREATER_THAN);
+		spec.add(gtInteger);
+		//GT - double
+		SearchCriteria gtDouble = new SearchCriteria("doubleField", 0.0, SearchOperation.GREATER_THAN);
+		spec.add(gtDouble);
+		//GT - long
+		SearchCriteria gtLong = new SearchCriteria("longField", 0L, SearchOperation.GREATER_THAN);
+		spec.add(gtLong);
+		
+		List<EntitySpecificationDataObject> esdos = List.of(esdoTrue, esdoFalse).stream().filter(spec.toPredicate(clazz)).collect(Collectors.toList());
+		assertThat(esdos.size()).isEqualTo(1);
+		assertThat(esdos.get(0)).isEqualTo(esdoTrue);
+		
+		spec = new EntitySpecification<EntitySpecificationDataObject>();
+		esdoTrue = new EntitySpecificationDataObject(0, 0.0, 0L, "");
+		esdoFalse = new EntitySpecificationDataObject(1, 1.0, 1L, "");
+		//LT - int
+		SearchCriteria ltInteger = new SearchCriteria("integerField", 1, SearchOperation.LESS_THAN);
+		spec.add(ltInteger);
+		//LT - double
+		SearchCriteria ltDouble = new SearchCriteria("doubleField", 1.0, SearchOperation.LESS_THAN);
+		spec.add(ltDouble);
+		//LT - long
+		SearchCriteria ltLong = new SearchCriteria("longField", 1L, SearchOperation.LESS_THAN);
+		spec.add(ltLong);
+		
+		esdos = List.of(esdoTrue, esdoFalse).stream().filter(spec.toPredicate(clazz)).collect(Collectors.toList());
+		assertThat(esdos.size()).isEqualTo(1);
+		assertThat(esdos.get(0)).isEqualTo(esdoTrue);
+		
+		spec = new EntitySpecification<EntitySpecificationDataObject>();
+		esdoTrue = new EntitySpecificationDataObject(1, 1.0, 1L, "a");
+		esdoFalse = new EntitySpecificationDataObject(0, 0.0, 0L, "");
+		//NE - int
+		SearchCriteria neInteger = new SearchCriteria("integerField", 0, SearchOperation.NOT_EQUAL);
+		spec.add(neInteger);
+		//NE - double
+		SearchCriteria neDouble = new SearchCriteria("doubleField", 0.0, SearchOperation.NOT_EQUAL);
+		spec.add(neDouble);
+		//NE - long
+		SearchCriteria neLong = new SearchCriteria("longField", 0L, SearchOperation.NOT_EQUAL);
+		spec.add(neLong);
+		//NE - string
+		SearchCriteria neString = new SearchCriteria("stringField", "", SearchOperation.NOT_EQUAL);
+		spec.add(neString);
+		
+		esdos = List.of(esdoTrue, esdoFalse).stream().filter(spec.toPredicate(clazz)).collect(Collectors.toList());
+		assertThat(esdos.size()).isEqualTo(1);
+		assertThat(esdos.get(0)).isEqualTo(esdoTrue);
+		
+		spec = new EntitySpecification<EntitySpecificationDataObject>();
+		esdoTrue = new EntitySpecificationDataObject(1, 1.0, 1L, "a");
+		esdoFalse = new EntitySpecificationDataObject(0, 0.0, 0L, "");
+		//EQ - int
+		SearchCriteria eqInteger = new SearchCriteria("integerField", 1, SearchOperation.EQUAL);
+		spec.add(eqInteger);
+		//EQ - double
+		SearchCriteria eqDouble = new SearchCriteria("doubleField", 1.0, SearchOperation.EQUAL);
+		spec.add(eqDouble);
+		//EQ - long
+		SearchCriteria eqLong = new SearchCriteria("longField", 1L, SearchOperation.EQUAL);
+		spec.add(eqLong);
+		//EQ - string
+		SearchCriteria eqString = new SearchCriteria("stringField", "a", SearchOperation.EQUAL);
+		spec.add(eqString);
+		
+		esdos = List.of(esdoTrue, esdoFalse).stream().filter(spec.toPredicate(clazz)).collect(Collectors.toList());
+		assertThat(esdos.size()).isEqualTo(1);
+		assertThat(esdos.get(0)).isEqualTo(esdoTrue);
+		
+		spec = new EntitySpecification<EntitySpecificationDataObject>();
+		esdoTrue = new EntitySpecificationDataObject(1, 1.0, 1L, "abcd");
+		esdoFalse = new EntitySpecificationDataObject(0, 0.0, 0L, "");
+		//MA - string
+		SearchCriteria maString = new SearchCriteria("stringField", "bc", SearchOperation.MATCH);
+		spec.add(maString);
+		
+		esdos = List.of(esdoTrue, esdoFalse).stream().filter(spec.toPredicate(clazz)).collect(Collectors.toList());
+		assertThat(esdos.size()).isEqualTo(1);
+		assertThat(esdos.get(0)).isEqualTo(esdoTrue);
+		
+	}
 	
 	@Test
 	public void queryOperationMapping() {
@@ -155,7 +251,6 @@ public class QueryTest {
 	}
 	
 	@Test
-	@Disabled("not finished")
 	public void sortBuilderPageable() {
 		
 		Pageable defaultPageable = SortBuilder.buildPageable(Optional.ofNullable(null), Optional.ofNullable(null), Optional.ofNullable(null));
@@ -165,7 +260,7 @@ public class QueryTest {
 		assertThat(defaultPageable.getSort()).isEqualTo(Sort.unsorted());
 		
 		String field = "a";
-		Sort.Direction direction = Sort.Direction.ASC;
+		String direction = "asc";
 		String[] sort = new String[] {field + ";" + direction};
 		int pageNumber = 1;
 		int pageSize = 10;
@@ -177,26 +272,25 @@ public class QueryTest {
 		
 		assertThat(pageable.getSort()).isNotEqualTo(Sort.unsorted());
 		Sort sortObject = pageable.getSort();
-		assertThat(sortObject.getOrderFor(field)).isEqualTo(direction);
+		assertThat(sortObject.getOrderFor(field).isAscending()).isTrue();
 		
 	}
 	
 	@Test
-	@Disabled("not finished")
 	public void sortBuilderArray() {
 		
 		String field1 = "a";
-		Sort.Direction direction1 = Sort.Direction.ASC;
+		String direction1 = "asc";
 		
 		String field2 = "b";
-		Sort.Direction direction2 = Sort.Direction.DESC;
+		String direction2 = "desc";
 		
 		String[] sort = new String[] {field1 + ";" + direction1, field2 + ";" + direction2};
 		
 		Sort sortObject = SortBuilder.buildSort(sort);
 		
-		assertThat(sortObject.getOrderFor(field1).isAscending()).isEqualTo(direction1.isAscending());
-		assertThat(sortObject.getOrderFor(field2).isDescending()).isEqualTo(direction2.isDescending());
+		assertThat(sortObject.getOrderFor(field1).isAscending()).isTrue();
+		assertThat(sortObject.getOrderFor(field2).isDescending()).isTrue();
 		
 	}
 	
@@ -238,5 +332,44 @@ public class QueryTest {
 		assertThat(params.get(1)).isEqualTo(criteria);
 		
 	}
+	
+}
+
+class EntitySpecificationDataObject extends BaseEntity<EntitySpecificationDataObject>{
+	
+	private Integer integerField;
+	private Double doubleField;
+	private Long longField;
+	private String stringField;
+	
+	public EntitySpecificationDataObject(
+			Integer integerField,
+			Double doubleField,
+			Long longField,
+			String stringField) {
+		this.integerField = integerField;
+		this.doubleField = doubleField;
+		this.longField = longField;
+		this.stringField = stringField;
+	}
+	
+	public Integer getIntegerField() { return this.integerField; }
+	public Double getDoubleField() { return this.doubleField; }
+	public Long getLongField() { return this.longField; }
+	public String getStringField() { return this.stringField; }
+
+	public void setIntegerField(Integer integerField) { this.integerField = integerField; }
+	public void setDoubleField(Double doubleField) { this.doubleField = doubleField; }
+	public void setLongField(Long longField) { this.longField = longField; }
+	public void setStringField(String stringField) { this.stringField = stringField; }
+	
+	
+	@Override
+	public String[] getUpdateableFields() { return null; }
+
+	@Override
+	public void applyPatch(String json)
+			throws JsonMappingException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException, JsonProcessingException {}
 	
 }

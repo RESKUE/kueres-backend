@@ -1,7 +1,5 @@
 package kueres.query;
 
-import kueres.utility.Utility;
-
 /**
  * 
  * The class representation of a search criteria.
@@ -40,9 +38,6 @@ public class SearchCriteria {
 			this.key = keyAndValue[0];
 			this.value = keyAndValue[1];
 			this.operation = SearchOperation.getOperation(filter.charAt(this.key.length()));
-			Utility.LOG.info("key: {}", key);
-			Utility.LOG.info("value: {}", value);
-			Utility.LOG.info("operation: {}", operation);
 			if (operation == null) {
 				throw new IllegalArgumentException("Incorrect filter format");
 			}
