@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.geojson.Point;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -107,13 +108,10 @@ public class DefaultLocationService implements LocationService {
 
 			return null;
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Utility.LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-
-		return null;
 		
 	}
 
@@ -162,10 +160,9 @@ public class DefaultLocationService implements LocationService {
 				return node.get("display_name").asText();
 			}
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Utility.LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
 		return null;
@@ -195,13 +192,10 @@ public class DefaultLocationService implements LocationService {
 			sts.things().create(poi);
 			return poi.getId().getJson();
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ServiceFailureException e) {
-			e.printStackTrace();
+		} catch (IOException | ServiceFailureException e) {
+			Utility.LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-		
-		return null;
 
 	}
 
@@ -220,10 +214,9 @@ public class DefaultLocationService implements LocationService {
 			Location location = sts.locations().find(Id.tryToParse(id));
 			sts.locations().delete(location);
 			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ServiceFailureException e) {
-			e.printStackTrace();
+		} catch (IOException | ServiceFailureException e) {
+			Utility.LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -257,13 +250,10 @@ public class DefaultLocationService implements LocationService {
 
 			return ids;
 			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ServiceFailureException e) {
-			e.printStackTrace();
+		} catch (IOException | ServiceFailureException e) {
+			Utility.LOG.error(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-		
-		return null;
 		
 	}
 

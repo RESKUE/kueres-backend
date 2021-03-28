@@ -2,6 +2,7 @@ package kueres.location;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import de.fraunhofer.iosb.ilt.sta.ServiceFailureException;
 import kueres.KueresTestInitializer;
@@ -82,6 +85,43 @@ public class LocationTest {
 		double error = 1 - (distance / distanceNorthToSouthPole);
 		
 		assertThat(error).isCloseTo(0.0, within(0.001));
+		
+	}
+	
+	@Test
+	public void malformedUrl() {
+		
+		String nominatimUrl = (String) ReflectionTestUtils.getField(service, "nominatimUrl");
+		String frostUrl = (String) ReflectionTestUtils.getField(service, "frostUrl");
+		
+		ReflectionTestUtils.setField(service, "nominatimUrl", "httpabc://aaa.bbb.ccc/");
+		ReflectionTestUtils.setField(service, "frostUrl", "httpabc://aaa.bbb.ccc/");
+		
+		String addressWhitehouse = "White House, 1600, Pennsylvania Avenue Northwest, Washington, District of Columbia, 20500, United States";
+		double[] coordinatesWhitehouse = new double[] {-77.03655315, 38.897699700000004};
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			service.addressToCoordinates(addressWhitehouse);
+		});
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			service.coordinatesToAddress(coordinatesWhitehouse);
+		});
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			service.addPOI("Test", coordinatesWhitehouse);
+		});
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			service.removePOI("-1");
+		});
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			service.findInRadius(0, coordinatesWhitehouse);
+		});
+		
+		ReflectionTestUtils.setField(service, "nominatimUrl", nominatimUrl);
+		ReflectionTestUtils.setField(service, "frostUrl", frostUrl);
 		
 	}
 	

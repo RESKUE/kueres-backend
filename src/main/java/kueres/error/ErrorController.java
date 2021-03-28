@@ -47,7 +47,7 @@ public class ErrorController {
 		response += "\t\"path\": \"" + requestUri + "\"\n";
 		response += "}";
 		
-		return ResponseEntity.status(HttpStatus.valueOf(statusCode)).contentType(MediaType.APPLICATION_JSON).body(response);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(response);
 		
     }
 	

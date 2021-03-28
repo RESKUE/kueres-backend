@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import kueres.KueresTestInitializer;
 import kueres.event.EventController;
+import kueres.event.EventEntity;
 import kueres.event.EventService;
 
 @SpringBootTest
@@ -51,6 +52,14 @@ public class EventbusTest {
 		ReflectionTestUtils.invokeMethod(eventService, "startReceivingEvents");
 		subscribers = (Map<String, String>) ReflectionTestUtils.getField(eventConsumer, "subscribers");
 		assertThat(subscribers.containsKey(eventService.getIdentifier())).isTrue();
+		
+	}
+	
+	@Test
+	public void sendEntityAsEvent() {
+		
+		EventEntity event = new EventEntity();
+		EventConsumer.sendEvent(event);
 		
 	}
 	

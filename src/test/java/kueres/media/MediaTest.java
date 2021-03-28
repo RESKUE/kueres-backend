@@ -64,6 +64,18 @@ public class MediaTest {
 				ContentType.IMAGE_PNG.toString(), this.logoContent);
 
 	}
+	
+	@Test
+	public void getUpdateableFields() {
+		
+		MediaEntity media = new MediaEntity();
+		String[] updateableFields = media.getUpdateableFields();
+		
+		for (String field : updateableFields) {
+			ReflectionTestUtils.getField(media, field);
+		}
+		
+	}
 
 	@Test
 	@WithMockUser(roles = { "administrator" })
