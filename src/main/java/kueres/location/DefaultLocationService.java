@@ -88,6 +88,11 @@ public class DefaultLocationService implements LocationService {
 
 			String response = content.toString();
 			
+			if (status > 299) {
+				Utility.LOG.error(response);
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+			}
+			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode array = mapper.readTree(response);
 			if (array.isArray() && array.size() > 0) {
@@ -153,6 +158,11 @@ public class DefaultLocationService implements LocationService {
 			connection.disconnect();
 
 			String response = content.toString();
+			
+			if (status > 299) {
+				Utility.LOG.error(response);
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+			}
 			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree(response);
