@@ -39,7 +39,6 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 		for (String field : fields) {
 			if (json.contains("\"" + field + "\":")) {
 				PropertyDescriptor descriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(typeClass, field);
-//				descriptor.getWriteMethod().invoke(entity, descriptor.getPropertyType().cast(descriptor.getReadMethod().invoke(parsed)));
 				descriptor.getWriteMethod().invoke(entity, descriptor.getReadMethod().invoke(parsed));
 			}
 		}
@@ -48,7 +47,7 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 		
 	}
 	
-	protected boolean containsFields(String json, String fieldName) {
+	public static boolean containsFields(String json, String fieldName) {
 		return json.contains("\"" + fieldName + "\":");
 	}
 	
