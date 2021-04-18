@@ -29,25 +29,27 @@ public class ErrorController {
 	 * @throws ResponseStatusException when the exception could not be read.
 	 */
 	@ExceptionHandler(Exception.class)
-    public ResponseEntity<String> error(Exception e) throws ResponseStatusException {
+    public ResponseEntity<String> error(Exception e) throws Exception {
 		
-		String statusCode = "400";
-		String exceptionType = "Bad request";
-		String message = "No message available";
-		String requestUri = "/api";
-		if (e instanceof ResponseStatusException) {
-			throw (ResponseStatusException) e;
-		}
+		throw e;
 		
-		String response = "{\n";
-		response += "\t\"timestamp\": \"" + new Timestamp(System.currentTimeMillis()).toInstant() + "\",\n";
-		response += "\t\"status\": " + statusCode + ",\n";
-		response += "\t\"error\": \"" + exceptionType + "\",\n";
-		response += "\t\"message\": \"" + message + "\",\n";
-		response += "\t\"path\": \"" + requestUri + "\"\n";
-		response += "}";
-		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(response);
+//		String statusCode = "400";
+//		String exceptionType = "Bad request";
+//		String message = "No message available";
+//		String requestUri = "/api";
+//		if (e instanceof ResponseStatusException) {
+//			throw (ResponseStatusException) e;
+//		}
+//		
+//		String response = "{\n";
+//		response += "\t\"timestamp\": \"" + new Timestamp(System.currentTimeMillis()).toInstant() + "\",\n";
+//		response += "\t\"status\": " + statusCode + ",\n";
+//		response += "\t\"error\": \"" + exceptionType + "\",\n";
+//		response += "\t\"message\": \"" + message + "\",\n";
+//		response += "\t\"path\": \"" + requestUri + "\"\n";
+//		response += "}";
+//		
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(response);
 		
     }
 	
