@@ -14,8 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
  * Mask outgoing errors.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 22, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 
@@ -31,25 +31,23 @@ public class ErrorController {
 	@ExceptionHandler(Exception.class)
     public ResponseEntity<String> error(Exception e) throws Exception {
 		
-		throw e;
+		String statusCode = "400";
+		String exceptionType = "Bad request";
+		String message = "No message available";
+		String requestUri = "/api";
+		if (e instanceof ResponseStatusException) {
+			throw (ResponseStatusException) e;
+		}
 		
-//		String statusCode = "400";
-//		String exceptionType = "Bad request";
-//		String message = "No message available";
-//		String requestUri = "/api";
-//		if (e instanceof ResponseStatusException) {
-//			throw (ResponseStatusException) e;
-//		}
-//		
-//		String response = "{\n";
-//		response += "\t\"timestamp\": \"" + new Timestamp(System.currentTimeMillis()).toInstant() + "\",\n";
-//		response += "\t\"status\": " + statusCode + ",\n";
-//		response += "\t\"error\": \"" + exceptionType + "\",\n";
-//		response += "\t\"message\": \"" + message + "\",\n";
-//		response += "\t\"path\": \"" + requestUri + "\"\n";
-//		response += "}";
-//		
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(response);
+		String response = "{\n";
+		response += "\t\"timestamp\": \"" + new Timestamp(System.currentTimeMillis()).toInstant() + "\",\n";
+		response += "\t\"status\": " + statusCode + ",\n";
+		response += "\t\"error\": \"" + exceptionType + "\",\n";
+		response += "\t\"message\": \"" + message + "\",\n";
+		response += "\t\"path\": \"" + requestUri + "\"\n";
+		response += "}";
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(response);
 		
     }
 	

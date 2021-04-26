@@ -3,7 +3,7 @@ image: gitlab-ext.iosb.fraunhofer.de:4567/ilt-pse/ws20_21-mobile-anwendung-zur-u
 variables:
   GROUP_ID: kueres
   ARTIFACT_ID: backend
-  VERSION: 0.0.1-SNAPSHOT
+  VERSION: 1.0.0
 
 stages:
   - build

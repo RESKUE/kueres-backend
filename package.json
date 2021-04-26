@@ -15,7 +15,7 @@
     "url": "https://gitlab-ext.iosb.fraunhofer.de/ilt-pse/ws20_21-mobile-anwendung-zur-unterst-tzung-im-kulturg-terschutz/kueres-backend.git"
   },
   "author": "Tim Engbrocks",
-  "license": "MIT",
+  "license": "---",
   "dependencies": {
     "maven": "^5.0.0",
     "pre-push": "^0.1.1"

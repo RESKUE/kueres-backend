@@ -7,8 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Provide all custom configuration options that can be set in application.properties.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 24, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 

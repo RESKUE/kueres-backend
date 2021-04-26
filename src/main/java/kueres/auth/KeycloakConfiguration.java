@@ -24,8 +24,8 @@ import kueres.base.BaseController;
  * Configuration for the connection between the Spring Boot server and the Keycloak service.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 22, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 
@@ -47,6 +47,9 @@ public class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 		
 	}
 	
+	/**
+	 * Requests to the Swagger endpoint do not need to be authenticated.
+	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		

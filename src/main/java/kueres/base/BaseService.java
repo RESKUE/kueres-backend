@@ -25,8 +25,8 @@ import kueres.utility.Utility;
  * To operate correctly a BaseEntity and its BaseRepository are needed.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 22, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 
@@ -141,6 +141,10 @@ public abstract class BaseService<E extends BaseEntity<E>, R extends BaseReposit
 		
 	}
 	
+	/**
+	 * Get the class of the entity.
+	 * @return the class of the entity.
+	 */
 	@SuppressWarnings("unchecked")
 	public Class<E> getEntityClass() {
 		return (Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];

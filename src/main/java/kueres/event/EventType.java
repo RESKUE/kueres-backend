@@ -5,8 +5,8 @@ package kueres.event;
  * All event types used by the eventbus.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 25, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 

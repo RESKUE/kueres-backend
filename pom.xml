@@ -43,9 +43,9 @@
 
 	<groupId>kueres</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>KUERES backend</name>
-	<description>KUERES backend framework</description>
+	<description>KUERES backend</description>
 	<packaging>jar</packaging>
 
 	<properties>

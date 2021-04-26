@@ -32,8 +32,8 @@ import kueres.utility.Utility;
  * To operate correctly it needs a BaseEntity and its BaseRepository and BaseService.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 22, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 

@@ -22,14 +22,29 @@ import kueres.utility.Utility;
  * The BaseEntity is used as generic superclass for the rest of the kueres.base package.
  *
  * @author Tim Engbrocks, tim.engbrocks@student.kit.edu
- * @version 1.0
- * @since Feb 22, 2021
+ * @version 1.0.0
+ * @since Apr 26, 2021
  *
  */
 
 @MappedSuperclass
 public abstract class BaseEntity<E extends BaseEntity<E>> {
 
+	/**
+	 * Create an entity from a JSON string.
+	 * @param json - the JSON string
+	 * @param fields - all fields of the entity
+	 * @param typeClass - the type of entity that should be created
+	 * @return the created entity.
+	 * @throws JsonMappingException if the JSON string can not be processed
+	 * @throws InstantiationException if the JSON string can not be processed
+	 * @throws IllegalAccessException if the JSON string can not be processed
+	 * @throws IllegalArgumentException if the JSON string can not be processed
+	 * @throws InvocationTargetException if the JSON string can not be processed
+	 * @throws NoSuchMethodException if the JSON string can not be processed
+	 * @throws SecurityException if the JSON string can not be processed
+	 * @throws JsonProcessingException if the JSON string can not be processed
+	 */
 	public static <T extends BaseEntity<T>> T createEntityFromJSON(String json, String[] fields, Class<T> typeClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JsonMappingException, JsonProcessingException {
 		
 		T entity = typeClass.getDeclaredConstructor().newInstance();
@@ -47,10 +62,19 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 		
 	}
 	
+	/**
+	 * Test if a JSON string contains a field by its name.
+	 * @param json - the JSON string
+	 * @param fieldName - the fields name
+	 * @return if the JSON string contains the field.
+	 */
 	public static boolean containsFields(String json, String fieldName) {
 		return json.contains("\"" + fieldName + "\":");
 	}
 	
+	/**
+	 * A list of all updateable fields that the entity has.
+	 */
 	@JsonIgnore
 	public abstract String[] getUpdateableFields();
 	
@@ -66,11 +90,6 @@ public abstract class BaseEntity<E extends BaseEntity<E>> {
 	public static final String ID = "id";
 	public Long getId() { return this.id; }
 	
-	/**
-	 * Update the fields of instance of this class.
-	 * Fields that are not populated in the updated data will not be changed.
-	 * @param details - the updated data.
-	 */
 	/**
 	 * Update the fields of instance of this class.
 	 * Fields that are not populated in the updated data will not be changed.
